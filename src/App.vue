@@ -1,20 +1,34 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HomeView from './views/HomeView.vue'
+import TheNavbar from './components/layout/TheNavbar.vue'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <div id="app">
+    <TheNavbar />
+    <main class="main-content">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+}
+</style>
