@@ -17,18 +17,42 @@ import TheNavbar from './components/layout/TheNavbar.vue'
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  max-width: 1600px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
 }
 
 .main-content {
   flex: 1;
-  padding: 2rem;
-  background-color: #f8f9fa;
+  padding: 0rem;
 }
 
 /* Адаптивність */
-@media (max-width: 768px) {
+@media (max-width: 1680px) {
+  #app {
+    max-width: 1400px;
+  }
+}
+
+@media (max-width: 1440px) {
+  #app {
+    max-width: 1200px;
+  }
+}
+
+@media (max-width: 1200px) {
+  #app {
+    max-width: 100%;
+  }
+
   .main-content {
     padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 0.5rem;
   }
 }
 </style>
