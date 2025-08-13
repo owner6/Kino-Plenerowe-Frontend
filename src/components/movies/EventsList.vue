@@ -55,7 +55,7 @@ const formatPrice = (price) => {
     </h3>
 
     <div v-if="filteredEvents.length === 0" class="no-events">
-      <p>На цю дату подій не знайдено</p>
+      <p>Nie znaleziono wydarzeń na tę datę</p>
     </div>
 
     <div v-else class="events-grid">
@@ -66,15 +66,15 @@ const formatPrice = (price) => {
         </div>
 
         <div class="event-details">
-          <div class="event-place"><strong>Місце:</strong> {{ event.place.name }}</div>
+          <div class="event-place"><strong>Miejsce:</strong> {{ event.place.name }}</div>
           <div class="event-address">
             {{ event.place.street }} {{ event.place.streetNr }}, {{ event.place.city }}
           </div>
-          <div class="event-price"><strong>Ціна:</strong> {{ formatPrice(event.price) }}</div>
+          <div class="event-price"><strong>Cena:</strong> {{ formatPrice(event.price) }}</div>
         </div>
 
         <div class="event-actions">
-          <button class="btn-details">Детальніше</button>
+          <button class="btn-details">Więcej szczegółów</button>
         </div>
       </div>
     </div>

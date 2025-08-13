@@ -18,8 +18,8 @@ const fetchEvents = async () => {
     const data = await eventsService.getAllEvents()
     events.value = data
   } catch (err) {
-    error.value = 'Помилка завантаження подій'
-    console.error('Помилка завантаження подій:', err)
+    error.value = 'Błąd ładowania zdarzeń'
+    console.error('Błąd ładowania zdarzeń:', err)
   } finally {
     loading.value = false
   }
@@ -44,12 +44,12 @@ onMounted(() => {
 
       <!-- Список подій -->
       <div v-if="loading" class="loading">
-        <p>Завантаження подій...</p>
+        <p>ładowanie zdarzeń...</p>
       </div>
 
       <div v-else-if="error" class="error">
         <p>{{ error }}</p>
-        <button @click="fetchEvents" class="btn-retry">Спробувати знову</button>
+        <button @click="fetchEvents" class="btn-retry">Spróbuj ponownie</button>
       </div>
 
       <EventsList v-else :events="events" :selected-date="selectedDate" />
