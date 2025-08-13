@@ -75,7 +75,6 @@ const formatPrice = (price) => {
 
         <div class="event-actions">
           <button class="btn-details">Детальніше</button>
-          <button class="btn-book">Забронювати</button>
         </div>
       </div>
     </div>
