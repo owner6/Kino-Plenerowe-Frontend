@@ -18,7 +18,7 @@ app.use(PrimeVue, {
   },
 })
 
-// Глобальна реєстрація Button компонента
+// Глобальна реєстрація компонентів
 app.component('Button', Button)
 app.component('Menubar', Menubar)
 app.component('Avatar', Avatar)
