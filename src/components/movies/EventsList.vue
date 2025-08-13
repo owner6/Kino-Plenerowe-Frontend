@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   events: {
@@ -12,7 +13,8 @@ const props = defineProps({
   },
 })
 
-// Фільтрація подій по вибраній даті
+const router = useRouter()
+
 const filteredEvents = computed(() => {
   if (!props.selectedDate || props.events.length === 0) return []
 
@@ -24,7 +26,6 @@ const filteredEvents = computed(() => {
   })
 })
 
-// Форматування часу
 const formatTime = (datetime) => {
   return new Date(datetime).toLocaleTimeString('uk-UA', {
     hour: '2-digit',
@@ -32,7 +33,6 @@ const formatTime = (datetime) => {
   })
 }
 
-// Форматування дати
 const formatDate = (datetime) => {
   return new Date(datetime).toLocaleDateString('uk-UA', {
     year: 'numeric',
@@ -41,9 +41,12 @@ const formatDate = (datetime) => {
   })
 }
 
-// Форматування ціни
 const formatPrice = (price) => {
   return `${price.toFixed(2)} грн`
+}
+
+const goToPlace = (placeId) => {
+  router.push({ name: 'place-details', params: { placeId } })
 }
 </script>
 
@@ -74,7 +77,7 @@ const formatPrice = (price) => {
         </div>
 
         <div class="event-actions">
-          <button class="btn-details">Więcej szczegółów</button>
+          <button class="btn-details" @click="goToPlace(event.place.id)">Детальніше</button>
         </div>
       </div>
     </div>

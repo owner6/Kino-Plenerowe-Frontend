@@ -11,6 +11,11 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/places/:placeId',
+      name: 'place-details',
+      component: PlaceView,
+    },
+    {
       path: '/places',
       name: 'places',
       component: PlaceView,
