@@ -34,11 +34,6 @@ const menuItems = ref([
     command: () => router.push('/'),
   },
   {
-    label: 'Kino',
-    icon: 'pi pi-video',
-    command: () => router.push('/movies'),
-  },
-  {
     label: 'Miejsca',
     icon: 'pi pi-map-marker',
     items: [
