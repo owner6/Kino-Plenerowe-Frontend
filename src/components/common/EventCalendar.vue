@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import Calendar from 'primevue/calendar'
 
 const props = defineProps({
@@ -28,14 +28,22 @@ const formatDate = (date) => {
   })
 }
 
+// Ініціалізація календаря з початковою датою
+onMounted(() => {
+  if (props.selectedDate) {
+    selectedDate.value = new Date(props.selectedDate)
+  }
+})
+
 // Спостерігаємо за змінами props
 watch(
   () => props.selectedDate,
   (newDate) => {
     if (newDate) {
-      selectedDate.value = newDate
+      selectedDate.value = new Date(newDate)
     }
   },
+  { immediate: true },
 )
 </script>
 
@@ -51,7 +59,7 @@ watch(
         :max-date="new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)"
         class="primevue-calendar"
       />
-    </div>
+    </div>  
   </div>
 </template>
 
