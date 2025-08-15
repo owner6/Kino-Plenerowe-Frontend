@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
+const router = useRouter()
+
 const props = defineProps({
   events: {
     type: Array,
@@ -13,8 +15,7 @@ const props = defineProps({
   },
 })
 
-const router = useRouter()
-
+// Фільтрація подій по вибраній даті
 const filteredEvents = computed(() => {
   if (!props.selectedDate || props.events.length === 0) return []
 
@@ -26,6 +27,12 @@ const filteredEvents = computed(() => {
   })
 })
 
+// Перехід на сторінку місця
+const goToPlace = (placeId) => {
+  router.push(`/places/${placeId}`)
+}
+
+// Форматування часу
 const formatTime = (datetime) => {
   return new Date(datetime).toLocaleTimeString('uk-UA', {
     hour: '2-digit',
@@ -33,6 +40,7 @@ const formatTime = (datetime) => {
   })
 }
 
+// Форматування дати
 const formatDate = (datetime) => {
   return new Date(datetime).toLocaleDateString('uk-UA', {
     year: 'numeric',
@@ -41,12 +49,9 @@ const formatDate = (datetime) => {
   })
 }
 
+// Форматування ціни
 const formatPrice = (price) => {
   return `${price.toFixed(2)} грн`
-}
-
-const goToPlace = (placeId) => {
-  router.push({ name: 'place-details', params: { placeId } })
 }
 </script>
 
@@ -69,15 +74,27 @@ const goToPlace = (placeId) => {
         </div>
 
         <div class="event-details">
-          <div class="event-place"><strong>Miejsce:</strong> {{ event.place.name }}</div>
+          <div class="event-place">
+            <strong>Місце:</strong>
+            <span
+              class="place-name"
+              @click="goToPlace(event.place.id)"
+              role="button"
+              tabindex="0"
+              @keydown.enter="goToPlace(event.place.id)"
+              @keydown.space="goToPlace(event.place.id)"
+            >
+              {{ event.place.name }}
+            </span>
+          </div>
           <div class="event-address">
             {{ event.place.street }} {{ event.place.streetNr }}, {{ event.place.city }}
           </div>
-          <div class="event-price"><strong>Cena:</strong> {{ formatPrice(event.price) }}</div>
+          <div class="event-price"><strong>Ціна:</strong> {{ formatPrice(event.price) }}</div>
         </div>
 
         <div class="event-actions">
-          <button class="btn-details" @click="goToPlace(event.place.id)">Детальніше</button>
+          <button class="btn-details">Więcej szczegółów</button>
         </div>
       </div>
     </div>
@@ -169,6 +186,24 @@ const goToPlace = (placeId) => {
 .event-price {
   margin-bottom: 8px;
   color: #666;
+}
+
+.place-name {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.place-name:hover {
+  color: #0056b3;
+  text-decoration: none;
+}
+
+.place-name:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .event-address {

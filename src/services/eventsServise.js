@@ -1,6 +1,7 @@
 const API_BASE_URL = 'http://localhost:3000'
 
 export const eventsService = {
+  // Отримати всі події
   async getAllEvents() {
     try {
       const response = await fetch(`${API_BASE_URL}/events`)
@@ -9,29 +10,17 @@ export const eventsService = {
       }
       return await response.json()
     } catch (error) {
-      console.error('Помилка:', error)
-      throw error
-    }
-  },
-
-  async getEventById(id) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/events/${id}`)
-      if (!response.ok) {
-        throw new Error('Błąd podczas odbierania zdarzenia')
-      }
-      return await response.json()
-    } catch (error) {
       console.error('Błąd:', error)
       throw error
     }
   },
 
-  async getEventsByPlace(placeId) {
+  // Отримати подію за ID
+  async getEventById(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/places/${placeId}/events`)
+      const response = await fetch(`${API_BASE_URL}/events/${id}`)
       if (!response.ok) {
-        throw new Error('Błąd pobierania zdarzeń dla lokalizacji')
+        throw new Error('Błąd podczas odbierania zdarzenia')
       }
       return await response.json()
     } catch (error) {
