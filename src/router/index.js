@@ -11,15 +11,10 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/warszawa/:date',
+      path: '/kino/warszawa/:date',
       name: 'calendar-date',
       component: HomeView,
       props: true,
-    },
-    {
-      path: '/calendar',
-      name: 'calendar',
-      component: HomeView,
     },
     {
       path: '/places/:placeId',
