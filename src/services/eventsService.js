@@ -27,9 +27,9 @@ export const eventsService = {
     }
   },
 
-  async getEventsByPlace(placeId) {
+  async getEventsByPlace(slug) {
     try {
-      const response = await fetch(`${API_BASE_URL}/places/${placeId}/events`)
+      const response = await fetch(`${API_BASE_URL}/places/${slug}/events`)
       if (!response.ok) {
         throw new Error('Błąd pobierania zdarzeń dla lokalizacji')
       }

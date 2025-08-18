@@ -21,7 +21,7 @@ const handleDateChange = (newDate) => {
 
 // Форматування дати для відображення
 const formatDate = (date) => {
-  return date.toLocaleDateString('uk-UA', {
+  return date.toLocaleDateString('pl-PL', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -59,7 +59,10 @@ watch(
         :max-date="new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)"
         class="primevue-calendar"
       />
-    </div>  
+    </div>
+    <div class="selected-date-info">
+      <p>Selected Date: {{ formatDate(selectedDate) }}</p>
+    </div>
   </div>
 </template>
 

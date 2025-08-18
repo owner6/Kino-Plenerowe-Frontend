@@ -17,7 +17,7 @@ const router = createRouter({
       props: true,
     },
     {
-      path: '/places/:placeId',
+      path: '/places/:slug',
       name: 'place-details',
       component: PlaceView,
     },

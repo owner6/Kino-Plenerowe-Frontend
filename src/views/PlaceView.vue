@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { eventsService } from '../services/eventsService'
+import { eventsService } from '@/services/eventsService'
 import Card from 'primevue/card'
 
 const route = useRoute()
@@ -34,7 +34,7 @@ const formatPrice = (price) => {
 
 onMounted(async () => {
   try {
-    const data = await eventsService.getEventsByPlace(route.params.placeId)
+    const data = await eventsService.getEventsByPlace(route.params.slug)
     // Об'єднуємо всі події в один масив
     const upcoming = data?.upcoming ?? []
     const past = data?.past ?? []
@@ -53,7 +53,7 @@ onMounted(async () => {
       <h2 class="title">
         Wydarzenia w lokalizacji
         <span v-if="placeName">"{{ placeName }}"</span>
-        <span v-else>#{{ route.params.placeId }}</span>
+        <span v-else>#{{ route.params.slug }}</span>
       </h2>
     </div>
 

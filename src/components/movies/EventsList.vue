@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -28,13 +28,13 @@ const filteredEvents = computed(() => {
 })
 
 // Перехід на сторінку місця
-const goToPlace = (placeId) => {
-  router.push(`/places/${placeId}`)
+const goToPlace = (slug) => {
+  router.push(`/places/${slug}`)
 }
 
 // Форматування часу
 const formatTime = (datetime) => {
-  return new Date(datetime).toLocaleTimeString('uk-UA', {
+  return new Date(datetime).toLocaleTimeString('pl-PL', {
     hour: '2-digit',
     minute: '2-digit',
   })
@@ -42,7 +42,7 @@ const formatTime = (datetime) => {
 
 // Форматування дати
 const formatDate = (datetime) => {
-  return new Date(datetime).toLocaleDateString('uk-UA', {
+  return new Date(datetime).toLocaleDateString('pl-PL', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -58,7 +58,7 @@ const formatPrice = (price) => {
 <template>
   <div class="events-list">
     <h3 class="events-title">
-      Події на {{ formatDate(selectedDate) }}
+      Wydarzenia na {{ formatDate(selectedDate) }}
       <span class="events-count">({{ filteredEvents.length }})</span>
     </h3>
 
@@ -78,12 +78,12 @@ const formatPrice = (price) => {
             <strong>Місце:</strong>
             <span
               class="place-name"
-              @click="goToPlace(event.place.id)"
+              @click="goToPlace(event.place.slug)"
               role="button"
               tabindex="0"
-              @keydown.enter="goToPlace(event.place.id)"
-              @keydown.space="goToPlace(event.place.id)"
-            >
+              @keydown.enter="goToPlace(event.place.slug)"
+              @keydown.space="goToPlace(event.place.slug)"
+              >
               {{ event.place.name }}
             </span>
           </div>
