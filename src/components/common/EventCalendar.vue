@@ -61,7 +61,7 @@ watch(
       />
     </div>
     <div class="selected-date-info">
-      <p>Selected Date: {{ formatDate(selectedDate) }}</p>
+      <p>Wybrana data: {{ formatDate(selectedDate) }}</p>
     </div>
   </div>
 </template>
