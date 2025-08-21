@@ -39,4 +39,17 @@ export const eventsService = {
       throw error
     }
   },
+
+  async getPlaceMapIframeUrl(slug) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/places/${slug}/map-iframe-url`)
+      if (!response.ok) {
+        throw new Error('Błąd pobierania URL mapy')
+      }
+      return await response.json()
+    } catch (error) {
+      console.error('Błąd:', error)
+      throw error
+    }
+  },
 }

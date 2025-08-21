@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { eventsService } from '@/services/eventsService'
 import Card from 'primevue/card'
+import GoogleMap from '@/components/common/GoogleMap.vue'
 
 const route = useRoute()
 const loading = ref(true)
@@ -81,6 +82,13 @@ onMounted(async () => {
         </Card>
       </div>
     </div>
+
+    <!-- Карта Google Maps -->
+    <GoogleMap
+      v-if="!loading && !error"
+      :place-slug="route.params.slug"
+      :place-name="placeName"
+    />
   </div>
 </template>
 
