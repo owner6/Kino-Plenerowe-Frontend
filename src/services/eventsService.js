@@ -40,6 +40,19 @@ export const eventsService = {
     }
   },
 
+  async getPlaceDetails(slug) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/places/${slug}`)
+      if (!response.ok) {
+        throw new Error('Błąd pobierania szczegółów lokalizacji')
+      }
+      return await response.json()
+    } catch (error) {
+      console.error('Błąd:', error)
+      throw error
+    }
+  },
+
   async getPlaceMapIframeUrl(slug) {
     try {
       const response = await fetch(`${API_BASE_URL}/places/${slug}/map-iframe-url`)
