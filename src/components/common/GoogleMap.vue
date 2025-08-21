@@ -21,7 +21,7 @@ const loadMapIframe = async () => {
   try {
     loading.value = true
     error.value = null
-    
+
     const response = await eventsService.getPlaceMapIframeUrl(props.placeSlug)
     iframeUrl.value = response.iframeUrl
   } catch (err) {

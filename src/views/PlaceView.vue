@@ -84,10 +84,10 @@ onMounted(async () => {
     </div>
 
     <!-- Карта Google Maps -->
-    <GoogleMap 
-      v-if="!loading && !error" 
-      :place-slug="route.params.slug" 
-      :place-name="placeName" 
+    <GoogleMap
+      v-if="!loading && !error"
+      :place-slug="route.params.slug"
+      :place-name="placeName"
     />
   </div>
 </template>
