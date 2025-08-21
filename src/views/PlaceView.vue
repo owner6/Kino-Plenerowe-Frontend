@@ -97,29 +97,35 @@ onMounted(async () => {
     />
 
     <!-- Посилання на місце -->
-    <div v-if="placeDetails?.link && !loading && !error" class="place-link-section">
-      <div class="place-link-container">
-        <div class="link-header">
-          <h3 class="link-title">
-            <i class="pi pi-external-link"></i>
-            Dodatkowe informacje
-          </h3>
+    <Panel 
+      v-if="placeDetails?.link && !loading && !error" 
+      header="Dodatkowe informacje"
+      class="place-link-panel"
+    >
+      <template #header>
+        <div class="panel-header">
+          <i class="pi pi-external-link"></i>
+          <span>Dodatkowe informacje</span>
         </div>
-        <div class="link-content">
-          <p class="link-description">Więcej informacji o tej lokalizacji:</p>
-          <a
-            :href="placeDetails.link"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="external-link"
-          >
-            <i class="pi pi-globe"></i>
-            {{ placeDetails.link }}
-            <i class="pi pi-external-link"></i>
-          </a>
-        </div>
-      </div>
-    </div>
+      </template>
+      
+      <p class="link-description">Więcej informacji o tej lokalizacji:</p>
+      
+      <Button 
+        :label="placeDetails.link"
+        icon="pi pi-globe"
+        iconPos="left"
+        @click="() => window.open(placeDetails.link, '_blank', 'noopener,noreferrer')"
+        class="external-link-button"
+        outlined
+      >
+        <template #default>
+          <i class="pi pi-globe"></i>
+          <span class="button-text">{{ placeDetails.link }}</span>
+          <i class="pi pi-external-link"></i>
+        </template>
+      </Button>
+    </Panel>
   </div>
 </template>
 
@@ -178,96 +184,37 @@ onMounted(async () => {
   }
 }
 
-.place-link-section {
+.place-link-panel {
   margin-top: 24px;
 }
 
-.place-link-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.link-header {
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
-}
-
-.link-title {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
+.panel-header {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.link-title i {
-  font-size: 1.1rem;
-}
-
-.link-content {
-  padding: 24px;
+  font-weight: 600;
 }
 
 .link-description {
-  margin: 0 0 16px 0;
+  margin: 0 0 1rem 0;
   color: #666;
   font-size: 1rem;
 }
 
-.external-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+.external-link-button {
+  width: 100%;
+  justify-content: flex-start;
   word-break: break-all;
 }
 
-.external-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.4);
-  text-decoration: none;
-  color: white;
-}
-
-.external-link:active {
-  transform: translateY(0);
-}
-
-.external-link i:first-child {
-  font-size: 1.1rem;
-}
-
-.external-link i:last-child {
-  font-size: 0.9rem;
-  opacity: 0.8;
+.external-link-button .button-text {
+  flex: 1;
+  text-align: left;
+  margin: 0 8px;
 }
 
 @media (max-width: 768px) {
-  .link-header {
-    padding: 16px 20px;
-  }
-
-  .link-title {
-    font-size: 1.1rem;
-  }
-
-  .link-content {
-    padding: 20px;
-  }
-
-  .external-link {
-    padding: 10px 16px;
+  .external-link-button {
     font-size: 0.9rem;
   }
 }
