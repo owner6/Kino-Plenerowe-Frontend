@@ -19,9 +19,23 @@ const placeName = computed(() => {
 const updatePlaceSEOMetadata = (place) => {
   if (!place) return
   
+  // Детальне логування SEO процесу
+  console.group('🔍 SEO Metadata Update Process')
+  console.log('📦 Place object:', place)
+  console.log('🏷️ Available seo_title:', place.seo_title)
+  console.log('🏷️ Available seoTitle:', place.seoTitle)
+  console.log('📄 Available seo_description:', place.seo_description)
+  console.log('📄 Available seoDescription:', place.seoDescription)
+  
   // Використовуємо SEO поля з бази даних або fallback значення
   const title = place.seo_title || place.seoTitle || `${place.name} - Kino plenerowe`
   const description = place.seo_description || place.seoDescription || `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
+  
+  console.log('✅ Final title:', title)
+  console.log('✅ Final description:', description)
+  console.log('🎯 Title source:', place.seo_title ? 'seo_title (DB)' : place.seoTitle ? 'seoTitle (DB)' : 'fallback')
+  console.log('🎯 Description source:', place.seo_description ? 'seo_description (DB)' : place.seoDescription ? 'seoDescription (DB)' : 'fallback')
+  console.groupEnd()
   
   // Оновлюємо title
   document.title = title
@@ -64,9 +78,13 @@ const formatPrice = (price) => {
 
 onMounted(async () => {
   try {
+    console.log('🚀 Loading place data for slug:', route.params.slug)
+    
     // Завантажуємо деталі місця
     const placeData = await eventsService.getPlaceDetails(route.params.slug)
     placeDetails.value = placeData
+    
+    console.log('✅ Place details loaded:', placeData)
 
     // Завантажуємо події для місця
     const data = await eventsService.getEventsByPlace(route.params.slug)
@@ -74,7 +92,10 @@ onMounted(async () => {
     const upcoming = data?.upcoming ?? []
     const past = data?.past ?? []
     events.value = [...upcoming, ...past]
+    
+    console.log('✅ Events loaded:', { upcoming: upcoming.length, past: past.length })
   } catch (e) {
+    console.error('❌ Error loading place data:', e)
     error.value = e?.message || 'Błąd przesyłania'
   } finally {
     loading.value = false
