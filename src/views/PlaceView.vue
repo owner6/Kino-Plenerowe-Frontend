@@ -19,9 +19,9 @@ const placeName = computed(() => {
 const updatePlaceSEOMetadata = (place) => {
   if (!place) return
   
-  // Використовуємо title та description з бази даних або fallback значення
-  const title = place.seoTitle || `${place.name} - Kino plenerowe`
-  const description = place.seoDescription || `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
+  // Використовуємо SEO поля з бази даних або fallback значення
+  const title = place.seo_title || place.seoTitle || `${place.name} - Kino plenerowe`
+  const description = place.seo_description || place.seoDescription || `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
   
   // Оновлюємо title
   document.title = title

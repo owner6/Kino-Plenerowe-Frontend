@@ -42,7 +42,7 @@ export const eventsService = {
 
   async getPlaceDetails(slug) {
     try {
-      const response = await fetch(`${API_BASE_URL}/places/${slug}`)
+      const response = await fetch(`${API_BASE_URL}/places/${slug}?include=seo`)
       if (!response.ok) {
         throw new Error('Błąd pobierania szczegółów lokalizacji')
       }
