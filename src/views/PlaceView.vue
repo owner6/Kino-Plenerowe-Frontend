@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { eventsService } from '@/services/eventsService'
 import Card from 'primevue/card'
@@ -14,6 +14,34 @@ const placeDetails = ref(null)
 const placeName = computed(() => {
   return placeDetails.value?.name || events.value?.[0]?.place?.name || null
 })
+
+// Оновлення SEO метаданих для сторінки місця
+const updatePlaceSEOMetadata = (place) => {
+  if (!place) return
+  
+  // Використовуємо title та description з бази даних або fallback значення
+  const title = place.seoTitle || `${place.name} - Kino plenerowe`
+  const description = place.seoDescription || `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
+  
+  // Оновлюємо title
+  document.title = title
+  
+  // Оновлюємо або створюємо meta description
+  let metaDescription = document.querySelector('meta[name="description"]')
+  if (!metaDescription) {
+    metaDescription = document.createElement('meta')
+    metaDescription.name = 'description'
+    document.head.appendChild(metaDescription)
+  }
+  metaDescription.content = description
+}
+
+// Спостерігаємо за змінами деталей місця для оновлення SEO
+watch(placeDetails, (newPlace) => {
+  if (newPlace) {
+    updatePlaceSEOMetadata(newPlace)
+  }
+}, { immediate: true })
 
 const formatTime = (datetime) => {
   return new Date(datetime).toLocaleTimeString('uk-UA', {

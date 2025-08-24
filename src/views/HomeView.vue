@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import EventCalendar from '../components/common/EventCalendar.vue'
 import EventsList from '../components/movies/EventsList.vue'
@@ -12,6 +12,42 @@ const events = ref([])
 const selectedDate = ref(new Date())
 const loading = ref(false)
 const error = ref(null)
+
+// Визначаємо чи це головна сторінка (сьогодні)
+const isToday = computed(() => route.meta?.isToday || false)
+
+// Форматування дати для SEO
+const formatDateForSEO = (date) => {
+  const months = [
+    'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
+    'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'
+  ]
+  
+  const day = date.getDate()
+  const month = months[date.getMonth()]
+  const year = date.getFullYear()
+  
+  return `${day} ${month} ${year}`
+}
+
+// Оновлення SEO метаданих
+const updateSEOMetadata = (date) => {
+  const formattedDate = formatDateForSEO(date)
+  const title = `Kino plenerowe ${formattedDate}`
+  const description = `Repertuar kina plenerowego na ${formattedDate}. Sprawdź co gramy!`
+  
+  // Оновлюємо title
+  document.title = title
+  
+  // Оновлюємо або створюємо meta description
+  let metaDescription = document.querySelector('meta[name="description"]')
+  if (!metaDescription) {
+    metaDescription = document.createElement('meta')
+    metaDescription.name = 'description'
+    document.head.appendChild(metaDescription)
+  }
+  metaDescription.content = description
+}
 
 // Функція для парсингу дати з URL
 const parseDateFromUrl = (dateString) => {
@@ -38,15 +74,20 @@ const formatDateForUrl = (date) => {
 
 // Функція для оновлення URL з новою датою
 const updateUrlWithDate = (date) => {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const dateString = `${year}-${month}-${day}`
-
-  router.push({
-    name: 'calendar-date',
-    params: { date: dateString },
-  })
+  const dateString = formatDateForUrl(date)
+  
+  // Якщо це сьогоднішня дата, переходимо на головну сторінку
+  const today = new Date()
+  const isSelectedToday = date.toDateString() === today.toDateString()
+  
+  if (isSelectedToday) {
+    router.push({ name: 'home' })
+  } else {
+    router.push({
+      name: 'calendar-date',
+      params: { date: dateString },
+    })
+  }
 }
 
 // Функція для парсингу дати з URL параметрів
@@ -60,26 +101,36 @@ const parseDateFromParams = (dateString) => {
   const date = new Date(year, month - 1, day)
   return isNaN(date.getTime()) ? new Date() : date
 }
+
 // Ініціалізація дати з URL при завантаженні
 const initializeDateFromUrl = () => {
-  if (route.params.date) {
+  if (isToday.value) {
+    // Головна сторінка - завжди сьогоднішня дата
+    selectedDate.value = new Date()
+  } else if (route.params.date) {
     // Якщо є параметр дати в шляху
     selectedDate.value = parseDateFromParams(route.params.date)
   } else if (route.query.date) {
     // Якщо є query параметр (для зворотної сумісності)
     selectedDate.value = parseDateFromParams(route.query.date)
-  } else if (route.name === 'home') {
-    // Якщо переходимо на головну сторінку без параметрів
-    updateUrlWithDate(selectedDate.value)
+  }
+  
+  // Оновлюємо SEO метадані тільки для сторінок з датами
+  if (!isToday.value) {
+    updateSEOMetadata(selectedDate.value)
   }
 }
 
 // Спостерігаємо за змінами в URL
 watch(
-  () => route.params.date,
-  (newDate) => {
-    if (newDate) {
+  () => [route.params.date, route.meta?.isToday],
+  ([newDate, isHomePage]) => {
+    if (isHomePage) {
+      // Головна сторінка - завжди сьогоднішня дата
+      selectedDate.value = new Date()
+    } else if (newDate) {
       selectedDate.value = parseDateFromParams(newDate)
+      updateSEOMetadata(selectedDate.value)
     }
   },
 )
