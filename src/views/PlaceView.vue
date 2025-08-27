@@ -89,13 +89,13 @@ const goToPlace = (slug) => {
 const loadAllPlaces = async () => {
   try {
     console.log('🚀 Loading all places')
-    
+
     // Завантажуємо всі місця з сервера
     const placesData = await eventsService.getAllPlaces()
     allPlaces.value = placesData
-    
+
     console.log('✅ All places loaded:', placesData)
-    
+
     // Оновлюємо SEO для сторінки всіх місць
     document.title = 'Wszystkie miejsca - Kino plenerowe'
     let metaDescription = document.querySelector('meta[name="description"]')
@@ -155,7 +155,7 @@ onMounted(async () => {
 watch(() => route.params.slug, async (newSlug) => {
   loading.value = true
   error.value = null
-  
+
   try {
     if (!newSlug) {
       // Перехід на сторінку всіх місць
@@ -211,13 +211,6 @@ watch(() => route.params.slug, async (newSlug) => {
                 </div>
                 <div v-if="place.link" class="website">
                   <i class="pi pi-globe"></i>
-                  <a :href="place.link" target="_blank" rel="noopener noreferrer" @click.stop>
-                    Strona internetowa
-                  </a>
-                </div>
-                <div class="view-events">
-                  <i class="pi pi-calendar"></i>
-                  Kliknij, aby zobaczyć wydarzenia
                 </div>
               </div>
             </template>
