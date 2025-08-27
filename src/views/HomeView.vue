@@ -22,7 +22,7 @@ const formatDateForSEO = (date) => {
     'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
     'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'
   ]
-  
+
   const day = date.getDate()
   const month = months[date.getMonth()]
   const year = date.getFullYear()
@@ -35,10 +35,10 @@ const updateSEOMetadata = (date) => {
   const formattedDate = formatDateForSEO(date)
   const title = `Kino plenerowe ${formattedDate}`
   const description = `Repertuar kina plenerowego na ${formattedDate}. Sprawdź co gramy!`
-  
+
   // Оновлюємо title
   document.title = title
-  
+
   // Оновлюємо або створюємо meta description
   let metaDescription = document.querySelector('meta[name="description"]')
   if (!metaDescription) {
@@ -75,11 +75,11 @@ const formatDateForUrl = (date) => {
 // Функція для оновлення URL з новою датою
 const updateUrlWithDate = (date) => {
   const dateString = formatDateForUrl(date)
-  
+
   // Якщо це сьогоднішня дата, переходимо на головну сторінку
   const today = new Date()
   const isSelectedToday = date.toDateString() === today.toDateString()
-  
+
   if (isSelectedToday) {
     router.push({ name: 'home' })
   } else {
@@ -114,7 +114,7 @@ const initializeDateFromUrl = () => {
     // Якщо є query параметр (для зворотної сумісності)
     selectedDate.value = parseDateFromParams(route.query.date)
   }
-  
+
   // Оновлюємо SEO метадані тільки для сторінок з датами
   if (!isToday.value) {
     updateSEOMetadata(selectedDate.value)

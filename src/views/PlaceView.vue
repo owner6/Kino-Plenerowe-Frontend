@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { eventsService } from '@/services/eventsService'
 import Card from 'primevue/card'
 import GoogleMap from '@/components/common/GoogleMap.vue'
@@ -11,7 +11,6 @@ const loading = ref(true)
 const error = ref(null)
 const events = ref([])
 const placeDetails = ref(null)
-const allPlaces = ref([])
 
 // Визначаємо чи це сторінка всіх місць чи конкретного місця
 const isAllPlacesView = computed(() => !route.params.slug)
@@ -22,7 +21,7 @@ const placeName = computed(() => {
 // Оновлення SEO метаданих для сторінки місця
 const updatePlaceSEOMetadata = (place) => {
   if (!place) return
-  
+
   // Детальне логування SEO процесу
   console.group('🔍 SEO Metadata Update Process')
   console.log('📦 Place object:', place)
@@ -30,20 +29,20 @@ const updatePlaceSEOMetadata = (place) => {
   console.log('🏷️ Available seoTitle:', place.seoTitle)
   console.log('📄 Available seo_description:', place.seo_description)
   console.log('📄 Available seoDescription:', place.seoDescription)
-  
+
   // Використовуємо SEO поля з бази даних або fallback значення
   const title = place.seo_title || place.seoTitle || `${place.name} - Kino plenerowe`
   const description = place.seo_description || place.seoDescription || `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
-  
+
   console.log('✅ Final title:', title)
   console.log('✅ Final description:', description)
   console.log('🎯 Title source:', place.seo_title ? 'seo_title (DB)' : place.seoTitle ? 'seoTitle (DB)' : 'fallback')
   console.log('🎯 Description source:', place.seo_description ? 'seo_description (DB)' : place.seoDescription ? 'seoDescription (DB)' : 'fallback')
   console.groupEnd()
-  
+
   // Оновлюємо title
   document.title = title
-  
+
   // Оновлюємо або створюємо meta description
   let metaDescription = document.querySelector('meta[name="description"]')
   if (!metaDescription) {
@@ -111,21 +110,22 @@ const loadAllPlaces = async () => {
 // Завантаження конкретного місця
 const loadSpecificPlace = async (slug) => {
   try {
-    console.log('🚀 Loading place data for slug:', slug)
-    
+    console.log('🚀 Loading place data for slug:', route)
+
     // Завантажуємо деталі місця
-    const placeData = await eventsService.getPlaceDetails(slug)
+    const placeData = await eventsService.getPlaceDetails(route.params.slug)
     placeDetails.value = placeData
-    
+
     console.log('✅ Place details loaded:', placeData)
 
     // Завантажуємо події для місця
-    const data = await eventsService.getEventsByPlace(slug)
+    const data = await eventsService.getEventsByPlace(route.params.slug)
+
     // Об'єднуємо всі події в один масив
     const upcoming = data?.upcoming ?? []
     const past = data?.past ?? []
     events.value = [...upcoming, ...past]
-    
+
     console.log('✅ Events loaded:', { upcoming: upcoming.length, past: past.length })
   } catch (e) {
     console.error('❌ Error loading place data:', e)
@@ -234,8 +234,9 @@ onMounted(async () => {
     />
 
     <!-- Посилання на місце -->
-    <Panel 
-      v-if="placeDetails?.link && !loading && !error && !isAllPlacesView" 
+    <Panel
+      v-if="placeDetails?.link && !loading && !error"
+
       header="Dodatkowe informacje"
       class="place-link-panel"
     >
@@ -245,10 +246,8 @@ onMounted(async () => {
           <span>Dodatkowe informacje</span>
         </div>
       </template>
-      
-      <p class="link-description">Więcej informacji o tej lokalizacji:</p>
-      
-      <Button 
+
+      <Button
         :label="placeDetails.link"
         icon="pi pi-globe"
         iconPos="left"
@@ -287,12 +286,6 @@ onMounted(async () => {
   margin: 8px 0 0 0;
   color: #666;
   font-size: 1.1rem;
-}
-
-.events-tabs {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .state {
@@ -424,6 +417,35 @@ onMounted(async () => {
   margin: 0 0 1rem 0;
   color: #666;
   font-size: 1rem;
+}
+
+.external-link-button {
+  width: 100%;
+  justify-content: flex-start;
+  word-break: break-all;
+}
+
+.external-link-button .button-text {
+  flex: 1;
+  text-align: left;
+  margin: 0 8px;
+}
+
+@media (max-width: 768px) {
+  .external-link-button {
+    font-size: 0.9rem;
+  }
+}
+
+.place-link-panel {
+  margin-top: 24px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
 }
 
 .external-link-button {
