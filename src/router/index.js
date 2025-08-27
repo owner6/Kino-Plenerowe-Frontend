@@ -9,9 +9,10 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { isToday: true }
     },
     {
-      path: '/kino/warszawa/:date',
+      path: '/:date(\\d{4}-\\d{2}-\\d{2})',
       name: 'calendar-date',
       component: HomeView,
       props: true,

@@ -10,6 +10,7 @@ import Menubar from 'primevue/menubar'
 import Avatar from 'primevue/avatar'
 import TabPanel from 'primevue/tabpanel'
 import Card from 'primevue/card'
+import Panel from 'primevue/panel'
 
 const app = createApp(App)
 
@@ -26,5 +27,6 @@ app.component('Menubar', Menubar)
 app.component('Avatar', Avatar)
 app.component('TabPanel', TabPanel)
 app.component('Card', Card)
+app.component('Panel', Panel)
 
 app.mount('#app')
