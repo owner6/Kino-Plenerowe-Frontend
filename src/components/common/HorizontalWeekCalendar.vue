@@ -102,209 +102,80 @@ onMounted(() => {
 
 <template>
   <div class="horizontal-week-calendar">
-    <div class="calendar-header">
-      <h3 class="calendar-title">
-        <i class="pi pi-calendar"></i>
-        Wybierz dzień
-      </h3>
-    </div>
-    
     <div class="days-container">
-      <Button
+      <button
         v-for="day in weekDays"
         :key="day.date.toISOString()"
         :class="[
           'day-button',
           {
-            'day-selected': day.isSelected,
-            'day-today': day.isToday && !day.isSelected
+            'day-selected': day.isSelected
           }
         ]"
         @click="selectDay(day)"
-        :outlined="!day.isSelected"
       >
-        <div class="day-content">
-          <span class="day-name">{{ day.name }}</span>
-          <span class="day-name-short">{{ day.shortName }}</span>
-          <span class="day-number">{{ day.dayNumber }}</span>
-        </div>
-      </Button>
-    </div>
-    
-    <div class="selected-info">
-      <p class="selected-date">
-        Wybrana data: {{ selectedDate.toLocaleDateString('pl-PL', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          weekday: 'long'
-        }) }}
-      </p>
+        {{ day.name }}
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped>
 .horizontal-week-calendar {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
-}
-
-.calendar-header {
-  margin-bottom: 20px;
-}
-
-.calendar-title {
-  margin: 0;
-  color: #333;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-  justify-content: center;
-}
-
-.calendar-title i {
-  color: #007bff;
+  padding: 20px 0;
 }
 
 .days-container {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+  align-items: center;
 }
 
 .day-button {
-  min-width: 120px;
-  height: 60px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 2px solid #e0e0e0;
-  background: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  background-color: #f5f5f5;
   color: #333;
-}
-
-.day-button:hover {
-  background-color: #f8f9fa !important;
-  border-color: #007bff !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .day-button.day-selected {
-  background-color: #007bff !important;
-  border-color: #007bff !important;
-  color: white !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  background-color: #333;
+  color: white;
 }
 
-.day-button.day-today {
-  border-color: #28a745;
-  background-color: #f8fff9;
+.day-button:hover:not(.day-selected) {
+  background-color: #e0e0e0;
 }
 
-.day-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+.day-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.3);
 }
 
-.day-name {
-  font-size: 0.85rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.day-name-short {
-  display: none;
-  font-size: 0.8rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.day-number {
-  font-size: 1.1rem;
-  font-weight: bold;
-  line-height: 1;
-}
-
-.selected-info {
-  text-align: center;
-  padding: 16px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
-
-.selected-date {
-  margin: 0;
-  color: #666;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-/* Адаптивність */
+/* Адаптивність для мобільних пристроїв */
 @media (max-width: 768px) {
-  .horizontal-week-calendar {
-    padding: 16px;
-  }
-  
   .days-container {
-    gap: 6px;
+    gap: 2px;
+    flex-wrap: wrap;
   }
   
   .day-button {
-    min-width: 80px;
-    height: 55px;
-  }
-  
-  .day-name {
-    display: none;
-  }
-  
-  .day-name-short {
-    display: block;
-  }
-  
-  .calendar-title {
-    font-size: 1.1rem;
+    padding: 10px 16px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 480px) {
   .day-button {
-    min-width: 70px;
-    height: 50px;
+    padding: 8px 12px;
+    font-size: 12px;
   }
-  
-  .day-content {
-    gap: 1px;
-  }
-  
-  .day-name-short {
-    font-size: 0.75rem;
-  }
-  
-  .day-number {
-    font-size: 1rem;
-  }
-}
-
-/* Стилі для PrimeVue Button */
-:deep(.p-button) {
-  justify-content: center;
-  align-items: center;
-}
-
-:deep(.p-button-label) {
-  font-weight: inherit;
 }
 </style>
