@@ -6,11 +6,14 @@ import Card from 'primevue/card'
 import GoogleMap from '@/components/common/GoogleMap.vue'
 
 const route = useRoute()
+const router = useRouter()
 const loading = ref(true)
 const error = ref(null)
 const events = ref([])
 const placeDetails = ref(null)
 
+// Визначаємо чи це сторінка всіх місць чи конкретного місця
+const isAllPlacesView = computed(() => !route.params.slug)
 const placeName = computed(() => {
   return placeDetails.value?.name || events.value?.[0]?.place?.name || null
 })
@@ -76,7 +79,36 @@ const formatPrice = (price) => {
   return `${price.toFixed(2)} грн`
 }
 
-onMounted(async () => {
+// Перехід на сторінку конкретного місця
+const goToPlace = (slug) => {
+  router.push(`/places/${slug}`)
+}
+
+// Завантаження всіх місць
+const loadAllPlaces = async () => {
+  try {
+    console.log('🚀 Loading all places')
+    const data = await eventsService.getAllPlaces()
+    allPlaces.value = data
+    console.log('✅ All places loaded:', data)
+    
+    // Оновлюємо SEO для сторінки всіх місць
+    document.title = 'Wszystkie miejsca - Kino plenerowe'
+    let metaDescription = document.querySelector('meta[name="description"]')
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta')
+      metaDescription.name = 'description'
+      document.head.appendChild(metaDescription)
+    }
+    metaDescription.content = 'Wszystkie lokalizacje kina plenerowego. Wybierz miejsce i sprawdź repertuar.'
+  } catch (e) {
+    console.error('❌ Error loading all places:', e)
+    error.value = e?.message || 'Błąd ładowania miejsc'
+  }
+}
+
+// Завантаження конкретного місця
+const loadSpecificPlace = async (slug) => {
   try {
     console.log('🚀 Loading place data for slug:', route)
 
@@ -88,6 +120,7 @@ onMounted(async () => {
 
     // Завантажуємо події для місця
     const data = await eventsService.getEventsByPlace(route.params.slug)
+
     // Об'єднуємо всі події в один масив
     const upcoming = data?.upcoming ?? []
     const past = data?.past ?? []
@@ -97,6 +130,18 @@ onMounted(async () => {
   } catch (e) {
     console.error('❌ Error loading place data:', e)
     error.value = e?.message || 'Błąd przesyłania'
+  }
+}
+
+onMounted(async () => {
+  try {
+    if (isAllPlacesView.value) {
+      await loadAllPlaces()
+    } else {
+      await loadSpecificPlace(route.params.slug)
+    }
+  } catch (error) {
+    console.error('❌ Error in onMounted:', error)
   } finally {
     loading.value = false
   }
@@ -105,7 +150,14 @@ onMounted(async () => {
 
 <template>
   <div class="place-page">
-    <div class="header">
+    <!-- Заголовок для всіх місць -->
+    <div v-if="isAllPlacesView" class="header">
+      <h2 class="title">Wszystkie miejsca</h2>
+      <p class="subtitle">Wybierz lokalizację, aby zobaczyć repertuar</p>
+    </div>
+
+    <!-- Заголовок для конкретного місця -->
+    <div v-else class="header">
       <h2 class="title">
         Wydarzenia w lokalizacji
         <span v-if="placeName">"{{ placeName }}"</span>
@@ -116,8 +168,43 @@ onMounted(async () => {
     <div v-if="loading" class="state">Завантаження...</div>
     <div v-else-if="error" class="state error">{{ error }}</div>
     <div v-else>
-      <div v-if="events.length === 0" class="state">Brak wydarzeń w tej lokalizacji</div>
-      <div v-else class="events-grid">
+      <!-- Відображення всіх місць -->
+      <div v-if="isAllPlacesView">
+        <div v-if="allPlaces.length === 0" class="state">Brak dostępnych miejsc</div>
+        <div v-else class="places-grid">
+          <Card v-for="place in allPlaces" :key="place.id" class="place-card" @click="goToPlace(place.slug)">
+            <template #title>
+              <div class="place-title">
+                <i class="pi pi-map-marker"></i>
+                {{ place.name }}
+              </div>
+            </template>
+            <template #content>
+              <div class="place-info">
+                <div class="address">
+                  <i class="pi pi-home"></i>
+                  {{ place.street }} {{ place.streetNr }}, {{ place.city }}
+                </div>
+                <div v-if="place.link" class="website">
+                  <i class="pi pi-globe"></i>
+                  <a :href="place.link" target="_blank" rel="noopener noreferrer" @click.stop>
+                    Strona internetowa
+                  </a>
+                </div>
+                <div class="view-events">
+                  <i class="pi pi-calendar"></i>
+                  Kliknij, aby zobaczyć wydarzenia
+                </div>
+              </div>
+            </template>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Відображення подій для конкретного місця -->
+      <div v-else>
+        <div v-if="events.length === 0" class="state">Brak wydarzeń w tej lokalizacji</div>
+        <div v-else class="events-grid">
         <Card v-for="ev in events" :key="ev.id" class="event-card">
           <template #title>
             {{ ev.movieName }}
@@ -136,11 +223,12 @@ onMounted(async () => {
           </template>
         </Card>
       </div>
+      </div>
     </div>
 
     <!-- Карта Google Maps -->
     <GoogleMap
-      v-if="!loading && !error"
+      v-if="!loading && !error && !isAllPlacesView"
       :place-slug="route.params.slug"
       :place-name="placeName"
     />
@@ -148,6 +236,7 @@ onMounted(async () => {
     <!-- Посилання на місце -->
     <Panel
       v-if="placeDetails?.link && !loading && !error"
+
       header="Dodatkowe informacje"
       class="place-link-panel"
     >
@@ -188,6 +277,15 @@ onMounted(async () => {
 .title {
   margin: 0;
   color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subtitle {
+  margin: 8px 0 0 0;
+  color: #666;
+  font-size: 1.1rem;
 }
 
 .state {
@@ -197,6 +295,81 @@ onMounted(async () => {
 
 .state.error {
   color: #c0392b;
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.place-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.place-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #007bff;
+}
+
+.place-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+}
+
+.place-title i {
+  color: #007bff;
+}
+
+.place-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.address,
+.website,
+.view-events {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.address i {
+  color: #28a745;
+}
+
+.website i {
+  color: #17a2b8;
+}
+
+.website a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.website a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.view-events {
+  color: #007bff;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.view-events i {
+  color: #007bff;
 }
 
 .events-grid {
@@ -222,6 +395,45 @@ onMounted(async () => {
 
   .events-grid {
     grid-template-columns: 1fr;
+  }
+
+  .places-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.place-link-panel {
+  margin-top: 24px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.link-description {
+  margin: 0 0 1rem 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+.external-link-button {
+  width: 100%;
+  justify-content: flex-start;
+  word-break: break-all;
+}
+
+.external-link-button .button-text {
+  flex: 1;
+  text-align: left;
+  margin: 0 8px;
+}
+
+@media (max-width: 768px) {
+  .external-link-button {
+    font-size: 0.9rem;
   }
 }
 
