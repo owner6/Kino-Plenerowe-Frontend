@@ -190,12 +190,6 @@ onMounted(async () => {
   color: #333;
 }
 
-.events-tabs {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
 .state {
   padding: 16px 0;
   color: #666;
@@ -240,12 +234,6 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   font-weight: 600;
-}
-
-.link-description {
-  margin: 0 0 1rem 0;
-  color: #666;
-  font-size: 1rem;
 }
 
 .external-link-button {
