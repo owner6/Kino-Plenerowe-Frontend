@@ -66,6 +66,19 @@ export const eventsService = {
     }
   },
 
+  async getAllPlaces() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/places`)
+      if (!response.ok) {
+        throw new Error('Błąd podczas pobierania miejsc')
+      }
+      return await response.json()
+    } catch (error) {
+      console.error('Błąd:', error)
+      throw error
+    }
+  },
+
   async getPlaceMapIframeUrl(slug) {
     try {
       const response = await fetch(`${API_BASE_URL}/places/${slug}/map-iframe-url`)
