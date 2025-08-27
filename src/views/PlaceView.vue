@@ -6,7 +6,6 @@ import Card from 'primevue/card'
 import GoogleMap from '@/components/common/GoogleMap.vue'
 
 const route = useRoute()
-const router = useRouter()
 const loading = ref(true)
 const error = ref(null)
 const events = ref([])
@@ -91,7 +90,7 @@ const loadAllPlaces = async () => {
     const data = await eventsService.getAllPlaces()
     allPlaces.value = data
     console.log('✅ All places loaded:', data)
-    
+
     // Оновлюємо SEO для сторінки всіх місць
     document.title = 'Wszystkie miejsca - Kino plenerowe'
     let metaDescription = document.querySelector('meta[name="description"]')
@@ -205,24 +204,24 @@ onMounted(async () => {
       <div v-else>
         <div v-if="events.length === 0" class="state">Brak wydarzeń w tej lokalizacji</div>
         <div v-else class="events-grid">
-        <Card v-for="ev in events" :key="ev.id" class="event-card">
-          <template #title>
-            {{ ev.movieName }}
-          </template>
-          <template #subtitle>
-            {{ formatDate(ev.datetime) }} • {{ formatTime(ev.datetime) }}
-          </template>
-          <template #content>
-            <div class="event-meta">
-              <div class="row">
-                <strong>Адреса:</strong> {{ ev.place.street }} {{ ev.place.streetNr }},
-                {{ ev.place.city }}
+          <Card v-for="ev in events" :key="ev.id" class="event-card">
+            <template #title>
+              {{ ev.movieName }}
+            </template>
+            <template #subtitle>
+              {{ formatDate(ev.datetime) }} • {{ formatTime(ev.datetime) }}
+            </template>
+            <template #content>
+              <div class="event-meta">
+                <div class="row">
+                  <strong>Адреса:</strong> {{ ev.place.street }} {{ ev.place.streetNr }},
+                  {{ ev.place.city }}
+                </div>
+                <div class="row"><strong>Ціна:</strong> {{ formatPrice(ev.price) }}</div>
               </div>
-              <div class="row"><strong>Ціна:</strong> {{ formatPrice(ev.price) }}</div>
-            </div>
-          </template>
-        </Card>
-      </div>
+            </template>
+          </Card>
+        </div>
       </div>
     </div>
 
