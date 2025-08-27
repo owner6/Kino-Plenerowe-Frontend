@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import EventCalendar from '../components/common/EventCalendar.vue'
+import HorizontalWeekCalendar from '../components/common/HorizontalWeekCalendar.vue'
 import EventsList from '../components/movies/EventsList.vue'
 import { eventsService } from '../services/eventsService.js'
 
@@ -152,7 +152,7 @@ const fetchEvents = async () => {
 }
 
 // Обробка зміни дати
-const handleDateSelected = (date) => {
+const handleDaySelected = (date) => {
   selectedDate.value = date
   updateUrlWithDate(date)
 }
@@ -168,7 +168,7 @@ onMounted(() => {
   <main class="home-view">
     <div class="container">
       <!-- Календар -->
-      <EventCalendar :selected-date="selectedDate" @date-selected="handleDateSelected" />
+      <HorizontalWeekCalendar :selected-date="selectedDate" @day-select="handleDaySelected" />
 
       <!-- Список подій -->
       <div v-if="loading" class="loading">
