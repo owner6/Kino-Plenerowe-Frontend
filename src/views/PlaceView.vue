@@ -88,11 +88,6 @@ const goToPlace = (slug) => {
 const loadAllPlaces = async () => {
   try {
     console.log('🚀 Loading all places')
-    const data = await eventsService.getAllPlaces()
-    // eslint-disable-next-line no-undef
-    allPlaces.value = data
-    console.log('✅ All places loaded:', data)
-
     // Оновлюємо SEO для сторінки всіх місць
     document.title = 'Wszystkie miejsca - Kino plenerowe'
     let metaDescription = document.querySelector('meta[name="description"]')
