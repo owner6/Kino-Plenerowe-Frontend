@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { eventsService } from '@/services/eventsService'
 import Card from 'primevue/card'
 import GoogleMap from '@/components/common/GoogleMap.vue'
+import router from '@/router/index.js'
 
 const route = useRoute()
 const loading = ref(true)
@@ -88,6 +89,7 @@ const loadAllPlaces = async () => {
   try {
     console.log('🚀 Loading all places')
     const data = await eventsService.getAllPlaces()
+    // eslint-disable-next-line no-undef
     allPlaces.value = data
     console.log('✅ All places loaded:', data)
 
@@ -107,7 +109,7 @@ const loadAllPlaces = async () => {
 }
 
 // Завантаження конкретного місця
-const loadSpecificPlace = async (slug) => {
+const loadSpecificPlace = async () => {
   try {
     console.log('🚀 Loading place data for slug:', route)
 
