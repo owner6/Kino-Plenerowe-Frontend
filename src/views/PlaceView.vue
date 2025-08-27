@@ -11,6 +11,7 @@ const loading = ref(true)
 const error = ref(null)
 const events = ref([])
 const placeDetails = ref(null)
+const allPlaces = ref([])
 
 // Визначаємо чи це сторінка всіх місць чи конкретного місця
 const isAllPlacesView = computed(() => !route.params.slug)
@@ -88,6 +89,13 @@ const goToPlace = (slug) => {
 const loadAllPlaces = async () => {
   try {
     console.log('🚀 Loading all places')
+    
+    // Завантажуємо всі місця з сервера
+    const placesData = await eventsService.getAllPlaces()
+    allPlaces.value = placesData
+    
+    console.log('✅ All places loaded:', placesData)
+    
     // Оновлюємо SEO для сторінки всіх місць
     document.title = 'Wszystkie miejsca - Kino plenerowe'
     let metaDescription = document.querySelector('meta[name="description"]')
@@ -138,6 +146,26 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error('❌ Error in onMounted:', error)
+  } finally {
+    loading.value = false
+  }
+})
+
+// Спостерігаємо за змінами маршруту
+watch(() => route.params.slug, async (newSlug) => {
+  loading.value = true
+  error.value = null
+  
+  try {
+    if (!newSlug) {
+      // Перехід на сторінку всіх місць
+      await loadAllPlaces()
+    } else {
+      // Перехід на сторінку конкретного місця
+      await loadSpecificPlace()
+    }
+  } catch (error) {
+    console.error('❌ Error in route watcher:', error)
   } finally {
     loading.value = false
   }
