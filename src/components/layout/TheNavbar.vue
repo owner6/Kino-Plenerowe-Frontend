@@ -64,71 +64,31 @@ const menuItems = ref([
 
 <style scoped>
 .navbar-container {
+  max-width: 1600px;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-bottom: solid 1px #ddd;
 }
 
 .custom-menubar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
   border-radius: 0;
-  padding: 0.5rem 1rem;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-right: 2rem;
-}
-
-.logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
 }
 
 .logo-text {
   font-size: 1.2rem;
   font-weight: 600;
-  color: rgb(0, 0, 0);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .user-section {
   position: relative;
-}
-
-.user-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  min-width: 200px;
-  z-index: 1001;
-  margin-top: 0.5rem;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.dropdown-item:last-child {
-  border-bottom: none;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f9fa;
 }
 
 .dropdown-item i {
@@ -171,7 +131,6 @@ const menuItems = ref([
 :deep(.p-submenu-list) {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: none;
 }
 

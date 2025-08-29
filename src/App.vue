@@ -19,12 +19,12 @@ import TheNavbar from './components/layout/TheNavbar.vue'
   flex-direction: column;
   max-width: 1600px;
   margin: 0 auto;
-  background-color: #f8f9fa;
+  background-color: white;
 }
 
 .main-content {
   flex: 1;
-  padding: 0rem;
+  padding: 0 1rem;
 }
 
 /* Адаптивність */

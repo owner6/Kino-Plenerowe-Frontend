@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import EventCalendar from '../components/common/EventCalendar.vue'
+import HorizontalWeekCalendar from '../components/common/HorizontalWeekCalendar.vue'
 import EventsList from '../components/movies/EventsList.vue'
 import { eventsService } from '../services/eventsService.js'
 
@@ -26,7 +26,7 @@ const formatDateForSEO = (date) => {
   const day = date.getDate()
   const month = months[date.getMonth()]
   const year = date.getFullYear()
-  
+
   return `${day} ${month} ${year}`
 }
 
@@ -152,7 +152,7 @@ const fetchEvents = async () => {
 }
 
 // Обробка зміни дати
-const handleDateSelected = (date) => {
+const handleDaySelected = (date) => {
   selectedDate.value = date
   updateUrlWithDate(date)
 }
@@ -168,7 +168,7 @@ onMounted(() => {
   <main class="home-view">
     <div class="container">
       <!-- Календар -->
-      <EventCalendar :selected-date="selectedDate" @date-selected="handleDateSelected" />
+      <HorizontalWeekCalendar :selected-date="selectedDate" @day-select="handleDaySelected" />
 
       <!-- Список подій -->
       <div v-if="loading" class="loading">
@@ -191,24 +191,9 @@ onMounted(() => {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 24px;
-}
-
-.page-title {
-  text-align: center;
-  margin: 0 0 16px 0;
-  color: #333;
-  font-size: 2.5rem;
-  font-weight: bold;
-}
-
-.page-subtitle {
-  text-align: center;
-  margin: 0 0 40px 0;
-  color: #666;
-  font-size: 1.1rem;
+  padding: 0 0px;
 }
 
 .loading,
@@ -225,7 +210,6 @@ onMounted(() => {
 }
 
 .btn-retry {
-  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -241,14 +225,6 @@ onMounted(() => {
 @media (max-width: 768px) {
   .container {
     padding: 0 16px;
-  }
-
-  .page-title {
-    font-size: 2rem;
-  }
-
-  .page-subtitle {
-    font-size: 1rem;
   }
 }
 </style>

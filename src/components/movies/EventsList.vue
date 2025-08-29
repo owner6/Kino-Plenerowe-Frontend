@@ -48,11 +48,6 @@ const formatDate = (datetime) => {
     day: 'numeric',
   })
 }
-
-// Форматування ціни
-const formatPrice = (price) => {
-  return `${price.toFixed(2)} грн`
-}
 </script>
 
 <template>
@@ -66,16 +61,12 @@ const formatPrice = (price) => {
       <p>Nie znaleziono wydarzeń na tę datę</p>
     </div>
 
-    <div v-else class="events-grid">
+    <div v-else class="events-container">
       <div v-for="event in filteredEvents" :key="event.id" class="event-card">
-        <div class="event-header">
-          <h4 class="movie-title">{{ event.movieName }}</h4>
-          <div class="event-time">{{ formatTime(event.datetime) }}</div>
-        </div>
-
+        <div class="event-time">{{ formatTime(event.datetime) }}</div>
         <div class="event-details">
+          <h4 class="movie-title">{{ event.movieName }}</h4>
           <div class="event-place">
-            <strong>Місце:</strong>
             <span
               class="place-name"
               @click="goToPlace(event.place.slug)"
@@ -83,18 +74,10 @@ const formatPrice = (price) => {
               tabindex="0"
               @keydown.enter="goToPlace(event.place.slug)"
               @keydown.space="goToPlace(event.place.slug)"
-              >
+            >
               {{ event.place.name }}
             </span>
           </div>
-          <div class="event-address">
-            {{ event.place.street }} {{ event.place.streetNr }}, {{ event.place.city }}
-          </div>
-          <div class="event-price"><strong>Ціна:</strong> {{ formatPrice(event.price) }}</div>
-        </div>
-
-        <div class="event-actions">
-          <button class="btn-details">Więcej szczegółów</button>
         </div>
       </div>
     </div>
@@ -105,8 +88,9 @@ const formatPrice = (price) => {
 .events-list {
   background: white;
   border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 32px 0;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .events-title {
@@ -134,17 +118,20 @@ const formatPrice = (price) => {
   font-style: italic;
 }
 
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+.events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .event-card {
+  display: flex;
+  align-items: center;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 20px;
   transition: all 0.2s ease;
+  height: 82px;
+  padding: 0 16px;
 }
 
 .event-card:hover {
@@ -152,52 +139,44 @@ const formatPrice = (price) => {
   transform: translateY(-2px);
 }
 
-.event-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-}
-
-.movie-title {
-  margin: 0;
-  color: #333;
-  font-size: 1.1rem;
-  flex: 1;
-  margin-right: 16px;
-}
-
 .event-time {
-  background-color: #28a745;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
   font-weight: bold;
-  white-space: nowrap;
+  min-width: 70px;
+  color: #333;
+  margin-right: 16px;
+  border-right: solid 1px #e5e7eb;
+  height: 48px;
 }
 
 .event-details {
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  align-items: center;
 }
 
-.event-place,
-.event-address,
-.event-price {
-  margin-bottom: 8px;
+.movie-title {
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.event-place {
   color: #666;
 }
 
 .place-name {
   color: #007bff;
-  text-decoration: underline;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .place-name:hover {
   color: #0056b3;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .place-name:focus {
@@ -206,62 +185,14 @@ const formatPrice = (price) => {
   border-radius: 4px;
 }
 
-.event-address {
-  font-size: 0.9rem;
-  color: #888;
-}
-
-.event-price {
-  color: #28a745;
-  font-size: 1.1rem;
-}
-
-.event-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.btn-details,
-.btn-book {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-}
-
-.btn-details {
-  background-color: #6c757d;
-  color: white;
-}
-
-.btn-details:hover {
-  background-color: #5a6268;
-}
-
-.btn-book {
-  background-color: #007bff;
-  color: white;
-  flex: 1;
-}
-
-.btn-book:hover {
-  background-color: #0056b3;
-}
-
 @media (max-width: 768px) {
-  .events-grid {
-    grid-template-columns: 1fr;
+  .event-card {
+    flex-direction: column;
   }
 
-  .event-header {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .event-actions {
-    flex-direction: column;
+  .event-time {
+    margin-right: 0;
+    margin-bottom: 12px;
   }
 }
 </style>

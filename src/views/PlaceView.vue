@@ -283,203 +283,66 @@ watch(() => route.params.slug, async (newSlug) => {
 </template>
 
 <style scoped>
-.place-page {
-  padding: 24px;
-}
-
-.header {
-  margin-bottom: 24px;
-}
-
-.title {
-  margin: 0;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.subtitle {
-  margin: 8px 0 0 0;
-  color: #666;
-  font-size: 1.1rem;
-}
-
-.state {
-  padding: 16px 0;
-  color: #666;
-}
-
-.state.error {
-  color: #c0392b;
-}
-
-.places-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-  margin-top: 8px;
-}
-
-.place-card {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.place-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #007bff;
-}
-
-.place-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #333;
-}
-
-.place-title i {
-  color: #007bff;
-}
-
-.place-info {
+/* Замість .events-grid з картками */
+.events-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.address,
-.website,
-.view-events {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #666;
-  font-size: 0.95rem;
-}
-
-.address i {
-  color: #28a745;
-}
-
-.website i {
-  color: #17a2b8;
-}
-
-.website a {
-  color: #007bff;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.website a:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
-
-.view-events {
-  color: #007bff;
-  font-weight: 500;
   margin-top: 8px;
-}
-
-.view-events i {
-  color: #007bff;
-}
-
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
-  margin-top: 8px;
 }
 
-.event-card :deep(.p-card-content) {
-  padding-top: 0;
+/* Подія тепер як рядок списку */
+.event-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.2s ease;
+  cursor: default;
+}
+
+/* останній рядок без бордера */
+.event-card:last-child {
+  border-bottom: none;
+}
+
+/* hover */
+.event-card:hover {
+  background: #f9f9f9;
+}
+
+/* всередині PrimeVue card */
+.event-card :deep(.p-card-body) {
+  padding: 0;
+  width: 100%;
+}
+
+.event-card :deep(.p-card-title) {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.event-card :deep(.p-card-subtitle) {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 8px;
 }
 
 .event-meta .row {
-  margin-bottom: 6px;
+  font-size: 0.9rem;
   color: #555;
+  margin-bottom: 4px;
 }
 
+/* мобільна версія */
 @media (max-width: 768px) {
-  .place-page {
-    padding: 16px;
-  }
-
-  .events-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .places-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.place-link-panel {
-  margin-top: 24px;
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-.link-description {
-  margin: 0 0 1rem 0;
-  color: #666;
-  font-size: 1rem;
-}
-
-.external-link-button {
-  width: 100%;
-  justify-content: flex-start;
-  word-break: break-all;
-}
-
-.external-link-button .button-text {
-  flex: 1;
-  text-align: left;
-  margin: 0 8px;
-}
-
-@media (max-width: 768px) {
-  .external-link-button {
-    font-size: 0.9rem;
-  }
-}
-
-.place-link-panel {
-  margin-top: 24px;
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-.external-link-button {
-  width: 100%;
-  justify-content: flex-start;
-  word-break: break-all;
-}
-
-.external-link-button .button-text {
-  flex: 1;
-  text-align: left;
-  margin: 0 8px;
-}
-
-@media (max-width: 768px) {
-  .external-link-button {
-    font-size: 0.9rem;
+  .event-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 }
 </style>
+
