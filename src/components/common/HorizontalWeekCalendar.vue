@@ -34,37 +34,31 @@ const shortDayNames = [
   'Ndz'
 ]
 
-// Генерація 7 днів тижня починаючи з понеділка поточного тижня
 const weekDays = computed(() => {
   const today = new Date()
-  const currentDay = today.getDay() // 0 = неділя, 1 = понеділок
-  const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay // Зміщення до понеділка
-
-  const monday = new Date(today)
-  monday.setDate(today.getDate() + mondayOffset)
-
   const days = []
 
   for (let i = 0; i < 7; i++) {
-    const date = new Date(monday)
-    date.setDate(monday.getDate() + i)
+    const date = new Date(today)
+    date.setDate(today.getDate() + i)
 
-    // Визначаємо відносну назву дня
-    let displayName = dayNames[i]
-    const daysDiff = Math.floor((date - today) / (1000 * 60 * 60 * 24))
+    // Індекс дня тижня для назв (0 = неділя → у нас 6)
+    let dayIndex = date.getDay()
+    if (dayIndex === 0) dayIndex = 6 // неділя → останній елемент
+    else dayIndex = dayIndex - 1     // решта зсуваємо (пон = 0, вт = 1, ...)
 
-    if (daysDiff === 0) {
-      displayName = 'Dzisiaj'
-    } else if (daysDiff === 1) {
-      displayName = 'Jutro'
-    } else if (daysDiff === -1) {
-      displayName = 'Wczoraj'
-    }
+    // Відносні назви
+    const daysDiff = i
+    let displayName = dayNames[dayIndex]
+
+    if (daysDiff === 0) displayName = 'Dzisiaj'
+    else if (daysDiff === 1) displayName = 'Jutro'
+    else if (daysDiff === -1) displayName = 'Wczoraj'
 
     days.push({
-      date: new Date(date),
+      date,
       name: displayName,
-      shortName: shortDayNames[i],
+      shortName: shortDayNames[dayIndex],
       dayNumber: date.getDate(),
       isToday: daysDiff === 0,
       isSelected: date.toDateString() === selectedDate.value.toDateString()
@@ -172,6 +166,7 @@ onMounted(() => {
   transition: all 0.3s ease;
   background: white;
   text-align: center;
+  cursor: pointer;
 }
 
 
@@ -208,44 +203,76 @@ onMounted(() => {
   line-height: 1;
 }
 
-/* Адаптивність */
+/* Адаптивність для мобільних пристроїв */
 @media (max-width: 768px) {
-  .horizontal-week-calendar {
-  }
-
-  .days-container {
-    cursor: pointer;
-    gap: 8px;
-  }
-
-  .day-button {
-    min-width: 70px;
-    height: 75px;
-    border-radius: 12px;
-  }
-
-  .day-name-short {
-    display: block;
-    font-size: 0.75rem;
+  .calendar-header {
+    margin-bottom: 16px;
   }
 
   .calendar-title {
     font-size: 1.1rem;
   }
+
+  .days-container {
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .day-button {
+    flex: 1;
+    min-width: 70px;
+    max-width: none;
+    height: 36px;
+    border-radius: 14px;
+  }
+
+  .day-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
 }
 
+/* Адаптивність для дуже маленьких екранів */
 @media (max-width: 480px) {
+  .horizontal-week-calendar {
+    border-radius: 12px;
+  }
+
+  .calendar-header {
+    margin-bottom: 12px;
+  }
+
+  .calendar-title {
+    font-size: 1rem;
+  }
+
+  .days-container {
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
   .day-button {
     min-width: 60px;
-    height: 65px;
+    height: 34px;
+    border-radius: 12px;
+  }
+
+  .day-name {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+/* Адаптивність для дуже вузьких екранів */
+@media (max-width: 360px) {
+  .day-button {
+    min-width: 50px;
+    height: 32px;
     border-radius: 10px;
   }
 
-  .day-content {
-    gap: 3px;
-  }
-
-  .day-name-short {
+  .day-name {
     font-size: 0.7rem;
   }
 }
@@ -254,9 +281,27 @@ onMounted(() => {
 :deep(.p-button) {
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 :deep(.p-button-label) {
   font-weight: inherit;
+  padding: 0;
+}
+
+/* Додаткові стилі для покращення вигляду на мобільних */
+@media (hover: none) and (pointer: coarse) {
+  .day-button:hover {
+    background-color: white;
+  }
+
+  .day-button.day-selected:hover {
+    background-color: #000000 !important;
+  }
+
+  .day-button.day-today:hover {
+    background-color: #3B82F6 !important;
+  }
 }
 </style>

@@ -64,11 +64,12 @@ const menuItems = ref([
 
 <style scoped>
 .navbar-container {
-  max-width: 1600px;
+  max-width: 100%;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1001;
   border-bottom: solid 1px #ddd;
+  background-color: #fff;
 }
 
 .custom-menubar {

@@ -89,7 +89,6 @@ onMounted(() => {
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin-top: 24px;
 }
 
 .map-header {
@@ -211,7 +210,6 @@ onMounted(() => {
 /* Адаптивність */
 @media (max-width: 768px) {
   .map-header {
-    padding: 16px 20px;
   }
 
   .map-title {

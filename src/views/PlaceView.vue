@@ -19,11 +19,17 @@ const placeName = computed(() => {
   return placeDetails.value?.name || events.value?.[0]?.place?.name || null
 })
 
+// Фільтруємо майбутні події
+const upcomingEvents = computed(() => {
+  const now = new Date()
+  return events.value.filter(event => new Date(event.datetime) >= now)
+    .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
+})
+
 // Оновлення SEO метаданих для сторінки місця
 const updatePlaceSEOMetadata = (place) => {
   if (!place) return
 
-  // Детальне логування SEO процесу
   console.group('🔍 SEO Metadata Update Process')
   console.log('📦 Place object:', place)
   console.log('🏷️ Available seo_title:', place.seo_title)
@@ -31,20 +37,15 @@ const updatePlaceSEOMetadata = (place) => {
   console.log('📄 Available seo_description:', place.seo_description)
   console.log('📄 Available seoDescription:', place.seoDescription)
 
-  // Використовуємо SEO поля з бази даних або fallback значення
   const title = place.seo_title || place.seoTitle || `${place.name} - Kino plenerowe`
   const description = place.seo_description || place.seoDescription || `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
 
   console.log('✅ Final title:', title)
   console.log('✅ Final description:', description)
-  console.log('🎯 Title source:', place.seo_title ? 'seo_title (DB)' : place.seoTitle ? 'seoTitle (DB)' : 'fallback')
-  console.log('🎯 Description source:', place.seo_description ? 'seo_description (DB)' : place.seoDescription ? 'seoDescription (DB)' : 'fallback')
   console.groupEnd()
 
-  // Оновлюємо title
   document.title = title
 
-  // Оновлюємо або створюємо meta description
   let metaDescription = document.querySelector('meta[name="description"]')
   if (!metaDescription) {
     metaDescription = document.createElement('meta')
@@ -54,7 +55,6 @@ const updatePlaceSEOMetadata = (place) => {
   metaDescription.content = description
 }
 
-// Спостерігаємо за змінами деталей місця для оновлення SEO
 watch(placeDetails, (newPlace) => {
   if (newPlace) {
     updatePlaceSEOMetadata(newPlace)
@@ -69,34 +69,33 @@ const formatTime = (datetime) => {
 }
 
 const formatDate = (datetime) => {
-  return new Date(datetime).toLocaleDateString('uk-UA', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  const date = new Date(datetime)
+  const today = new Date()
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  if (date.toDateString() === today.toDateString()) {
+    return 'Сегодня'
+  } else if (date.toDateString() === tomorrow.toDateString()) {
+    return 'Четверг'
+  } else {
+    return date.toLocaleDateString('uk-UA', {
+      weekday: 'long',
+    })
+  }
 }
 
-const formatPrice = (price) => {
-  return `${price.toFixed(2)} грн`
-}
-
-// Перехід на сторінку конкретного місця
 const goToPlace = (slug) => {
   router.push(`/places/${slug}`)
 }
 
-// Завантаження всіх місць
 const loadAllPlaces = async () => {
   try {
     console.log('🚀 Loading all places')
-
-    // Завантажуємо всі місця з сервера
     const placesData = await eventsService.getAllPlaces()
     allPlaces.value = placesData
-
     console.log('✅ All places loaded:', placesData)
 
-    // Оновлюємо SEO для сторінки всіх місць
     document.title = 'Wszystkie miejsca - Kino plenerowe'
     let metaDescription = document.querySelector('meta[name="description"]')
     if (!metaDescription) {
@@ -111,21 +110,15 @@ const loadAllPlaces = async () => {
   }
 }
 
-// Завантаження конкретного місця
 const loadSpecificPlace = async () => {
   try {
-    console.log('🚀 Loading place data for slug:', route)
+    console.log('🚀 Loading place data for slug:', route.params.slug)
 
-    // Завантажуємо деталі місця
     const placeData = await eventsService.getPlaceDetails(route.params.slug)
     placeDetails.value = placeData
-
     console.log('✅ Place details loaded:', placeData)
 
-    // Завантажуємо події для місця
     const data = await eventsService.getEventsByPlace(route.params.slug)
-
-    // Об'єднуємо всі події в один масив
     const upcoming = data?.upcoming ?? []
     const past = data?.past ?? []
     events.value = [...upcoming, ...past]
@@ -142,7 +135,7 @@ onMounted(async () => {
     if (isAllPlacesView.value) {
       await loadAllPlaces()
     } else {
-      await loadSpecificPlace(route.params.slug)
+      await loadSpecificPlace()
     }
   } catch (error) {
     console.error('❌ Error in onMounted:', error)
@@ -151,17 +144,14 @@ onMounted(async () => {
   }
 })
 
-// Спостерігаємо за змінами маршруту
 watch(() => route.params.slug, async (newSlug) => {
   loading.value = true
   error.value = null
 
   try {
     if (!newSlug) {
-      // Перехід на сторінку всіх місць
       await loadAllPlaces()
     } else {
-      // Перехід на сторінку конкретного місця
       await loadSpecificPlace()
     }
   } catch (error) {
@@ -177,71 +167,71 @@ watch(() => route.params.slug, async (newSlug) => {
     <!-- Заголовок для всіх місць -->
     <div v-if="isAllPlacesView" class="header">
       <h2 class="title">Wszystkie miejsca</h2>
-      <p class="subtitle">Wybierz lokalizację, aby zobaczyć repertuar</p>
     </div>
 
-    <!-- Заголовок для конкретного місця -->
-    <div v-else class="header">
-      <h2 class="title">
-        Wydarzenia w lokalizacji
-        <span v-if="placeName">"{{ placeName }}"</span>
-        <span v-else>#{{ route.params.slug }}</span>
-      </h2>
+    <!-- Заголовок та контент для конкретного місця -->
+    <div v-else-if="!loading && !error && placeDetails" class="place-content">
+      <!-- Заголовок місця -->
+      <div class="place-header">
+        <h1 class="place-title">{{ placeDetails.name }}</h1>
+        <p class="place-description">
+          Опис...
+        </p>
+      </div>
+
+      <!-- Основний контент -->
+      <div class="main-content">
+        <!-- Лівий блок - Репертуар -->
+        <div class="repertoire-section">
+          <h2 class="section-title">Nadchodzący repertuar</h2>
+
+          <div v-if="upcomingEvents.length === 0" class="no-events">
+            <p>Brak nadchodzących wydarzeń</p>
+          </div>
+
+          <div v-else class="events-list">
+            <div v-for="event in upcomingEvents" :key="event.id" class="event-item">
+              <div class="event-date">{{ formatDate(event.datetime) }}, {{ formatTime(event.datetime) }}
+              {{ event.movieName }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правий блок - Адреса -->
+        <div class="address-section">
+          <h3 class="address-title">Адрес</h3>
+          <div class="address-content">
+            <p class="address-text">{{ placeDetails.street }} {{ placeDetails.streetNr }}, {{ placeDetails.city }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
+    <!-- Стан завантаження та помилки -->
     <div v-if="loading" class="state">Завантаження...</div>
     <div v-else-if="error" class="state error">{{ error }}</div>
-    <div v-else>
-      <!-- Відображення всіх місць -->
-      <div v-if="isAllPlacesView">
-        <div v-if="allPlaces.length === 0" class="state">Brak dostępnych miejsc</div>
-        <div v-else class="places-grid">
-          <Card v-for="place in allPlaces" :key="place.id" class="place-card" @click="goToPlace(place.slug)">
-            <template #title>
-              <div class="place-title">
-                <i class="pi pi-map-marker"></i>
-                {{ place.name }}
-              </div>
-            </template>
-            <template #content>
-              <div class="place-info">
-                <div class="address">
-                  <i class="pi pi-home"></i>
-                  {{ place.street }} {{ place.streetNr }}, {{ place.city }}
-                </div>
-                <div v-if="place.link" class="website">
-                  <i class="pi pi-globe"></i>
-                </div>
-              </div>
-            </template>
-          </Card>
-        </div>
-      </div>
 
-      <!-- Відображення подій для конкретного місця -->
-      <div v-else>
-        <div v-if="events.length === 0" class="state">Brak wydarzeń w tej lokalizacji</div>
-        <div v-else class="events-grid">
-          <Card v-for="ev in events" :key="ev.id" class="event-card">
-            <template #title>
-              {{ ev.movieName }}
-            </template>
-            <template #subtitle>
-              {{ formatDate(ev.datetime) }} • {{ formatTime(ev.datetime) }}
-            </template>
-            <template #content>
-              <div class="event-meta">
-                <div class="row">
-                  <strong>Адреса:</strong> {{ ev.place.street }} {{ ev.place.streetNr }},
-                  {{ ev.place.city }}
-                </div>
-                <div class="row"><strong>Ціна:</strong> {{ formatPrice(ev.price) }}</div>
+    <!-- Відображення всіх місць -->
+    <div v-else-if="isAllPlacesView">
+      <div v-if="allPlaces.length === 0" class="state">Brak dostępnych miejsc</div>
+      <div v-else class="places-grid">
+        <Card v-for="place in allPlaces" :key="place.id" class="place-card" @click="goToPlace(place.slug)">
+          <template #title>
+            <div class="place-title">
+              {{ place.name }}
+            </div>
+          </template>
+          <template #content>
+            <div class="place-info">
+              <div class="address">
+                {{ place.street }} {{ place.streetNr }}, {{ place.city }}
               </div>
-            </template>
-          </Card>
-        </div>
+            </div>
+          </template>
+        </Card>
       </div>
     </div>
+
 
     <!-- Карта Google Maps -->
     <GoogleMap
@@ -252,8 +242,7 @@ watch(() => route.params.slug, async (newSlug) => {
 
     <!-- Посилання на місце -->
     <Panel
-      v-if="placeDetails?.link && !loading && !error"
-
+      v-if="!isAllPlacesView && placeDetails?.link && !loading && !error"
       header="Dodatkowe informacje"
       class="place-link-panel"
     >
@@ -283,66 +272,255 @@ watch(() => route.params.slug, async (newSlug) => {
 </template>
 
 <style scoped>
-/* Замість .events-grid з картками */
-.events-grid {
+.place-page {
+  max-width: 100%;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.place-content {
+  background: white;
+  border-radius: 0;
+  margin: 0;
+  padding-top: 20px;
+}
+
+.place-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.2;
+}
+
+.place-description {
+  display: flex;
+  align-items: left;
+
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+  max-width: 100%;
+  line-height: 1.6;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.repertoire-section {
+  min-height: 150px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 32px 0;
+}
+
+.events-list {
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
   gap: 16px;
 }
 
-/* Подія тепер як рядок списку */
-.event-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e0e0e0;
-  transition: background 0.2s ease;
-  cursor: default;
-}
-
-/* останній рядок без бордера */
-.event-card:last-child {
+.event-item {
+  padding: 0;
   border-bottom: none;
 }
 
-/* hover */
-.event-card:hover {
+.event-date {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.address-section {
+  background: #f8f9fa;
+  padding: 24px;
+  border-radius: 8px;
+  height: fit-content;
+}
+
+.address-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.address-content {
+  display: flex;
+  gap: 16px;
+}
+
+.address-text {
+  font-size: 1rem;
+  color: #333;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.no-events {
+  color: #666;
+  font-style: italic;
+  padding: 20px 0;
+}
+
+.state {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  color: #666;
+}
+
+.state.error {
+  color: #dc3545;
+}
+
+/* Стилі для сторінки всіх місць */
+.header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.title {
+  display: flex;
+  padding-top: 20px ;
+  margin: 0;
+  color: #333;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.place-card {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.place-card:hover {
   background: #f9f9f9;
 }
 
-/* всередині PrimeVue card */
-.event-card :deep(.p-card-body) {
-  padding: 0;
-  width: 100%;
-}
-
-.event-card :deep(.p-card-title) {
-  font-size: 1.1rem;
-  font-weight: 600;
+.place-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #000;
   margin-bottom: 4px;
 }
 
-.event-card :deep(.p-card-subtitle) {
+.place-info {
   font-size: 0.95rem;
   color: #666;
-  margin-bottom: 8px;
 }
 
-.event-meta .row {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 4px;
+.address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.95rem;
 }
 
-/* мобільна версія */
+.address i {
+  color: #28a745;
+}
+
+.website i {
+  color: #17a2b8;
+}
+
+.place-link-panel {
+  margin-top: 24px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.external-link-button {
+  width: 100%;
+  justify-content: flex-start;
+  word-break: break-all;
+}
+
+.external-link-button .button-text {
+  flex: 1;
+  text-align: left;
+  margin: 0 8px;
+}
+
+/* Адаптивність */
+@media (max-width: 1024px) {
+  .main-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .address-section {
+    order: -1;
+  }
+}
+
 @media (max-width: 768px) {
-  .event-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+  .place-page {
+    padding: 24px 16px;
+  }
+
+  .place-title {
+    font-size: 2rem;
+  }
+
+  .place-description {
+    font-size: 1rem;
+  }
+
+  .main-content {
+    padding: 0 16px;
+    gap: 32px;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .places-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .external-link-button {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .place-page {
+    padding: 16px 12px;
+  }
+
+  .main-content {
+    padding: 0 8px;
+  }
+
+  .place-title {
+    font-size: 1.8rem;
   }
 }
 </style>
-
