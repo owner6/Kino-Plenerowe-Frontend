@@ -13,10 +13,10 @@ const emit = defineEmits(['day-select'])
 const selectedDate = ref(new Date())
 const currentWeekStart = ref(new Date())
 
-// Список днів тижня українською
+// Список днів тижня
 const weekDaysUkrainian = [
   'Понеділок',
-  'Вівторок', 
+  'Вівторок',
   'Середа',
   'Четвер',
   "П'ятниця",
@@ -24,10 +24,10 @@ const weekDaysUkrainian = [
   'Неділя'
 ]
 
-// Генеруємо список днів починаючи з сьогоднішнього
+// Генеруємо список днів починаючи з сьогоднішнього дня
 const weekDays = computed(() => {
   const today = new Date()
-  const todayIndex = (today.getDay() + 6) % 7 // Конвертуємо з воскресенья=0 в понеділок=0
+  const todayIndex = (today.getDay() + 6) % 7 // Конвертуємо неділю=0 в понеділок=0
   
   const reorderedDays = []
   for (let i = 0; i < 7; i++) {
@@ -38,7 +38,7 @@ const weekDays = computed(() => {
   return reorderedDays
 })
 
-// Генеруємо дати для тижня починаючи з сьогодні
+// Генеруємо дати для тижня починаючи з сьогоднішнього дня
 const weekDates = computed(() => {
   const today = new Date()
   const dates = []
@@ -117,7 +117,7 @@ watch(
       selectedDate.value = new Date(newDate)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
 
