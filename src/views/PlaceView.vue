@@ -180,7 +180,7 @@ watch(() => route.params.slug, async (newSlug) => {
       <div class="place-header">
         <h1 class="place-title">{{ placeDetails.name }}</h1>
         <p class="place-description">
-          Летний кинотеатр под открытым небом в самом сердце Мокотовского поля.
+          {{ placeDetails.description || 'Opis miejsca będzie dostępny wkrótce.' }}
         </p>
       </div>
 
