@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { eventsService } from '@/services/eventsService'
+import { placeDescriptionsService } from '@/services/placeDescriptionsService'
 import Card from 'primevue/card'
 import GoogleMap from '@/components/common/GoogleMap.vue'
 import router from '@/router/index.js'
@@ -17,6 +18,12 @@ const allPlaces = ref([])
 const isAllPlacesView = computed(() => !route.params.slug)
 const placeName = computed(() => {
   return placeDetails.value?.name || events.value?.[0]?.place?.name || null
+})
+
+// Отримуємо опис місця з локального сервісу
+const placeDescription = computed(() => {
+  if (!route.params.slug) return null
+  return placeDescriptionsService.getDescription(route.params.slug)
 })
 
 // Фільтруємо майбутні події
@@ -180,7 +187,7 @@ watch(() => route.params.slug, async (newSlug) => {
       <div class="place-header">
         <h1 class="place-title">{{ placeDetails.name }}</h1>
         <p class="place-description">
-          {{ placeDetails.description || 'Opis miejsca będzie dostępny wkrótce.' }}
+          {{ placeDescription }}
         </p>
       </div>
 
