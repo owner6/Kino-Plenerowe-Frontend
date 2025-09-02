@@ -433,6 +433,7 @@ watch(
   border-radius: 8px;
   transition: all 0.2s ease;
   background: var(--card);
+  border: 1px solid var(--border);
 }
 
 .place-card:hover {
