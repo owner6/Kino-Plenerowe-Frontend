@@ -14,12 +14,21 @@ import Card from 'primevue/card'
 import Panel from 'primevue/panel'
 import 'primeicons/primeicons.css'
 
+// Apply saved theme before app creation
+const savedTheme = localStorage.getItem('theme')
+if (savedTheme === 'dark') {
+  document.documentElement.classList.add('app-dark')
+}
+
 const app = createApp(App)
 
 app.use(router)
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
+    options: {
+      darkModeSelector: '.app-dark',
+    },
   },
 })
 

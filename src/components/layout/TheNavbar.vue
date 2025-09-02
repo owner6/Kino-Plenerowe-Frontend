@@ -10,6 +10,13 @@
       <template #end>
         <div class="user-section">
           <Button
+            :icon="isDark ? 'pi pi-sun' : 'pi pi-moon'"
+            class="p-button-text p-button-rounded"
+            @click="toggleTheme"
+            aria-label="Toggle theme"
+            :title="isDark ? 'Tryb jasny' : 'Tryb ciemny'"
+          />
+          <Button
             icon="pi pi-user"
             class="p-button-text p-button-rounded"
             @click="showUserMenu = !showUserMenu"
@@ -26,6 +33,14 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const showUserMenu = ref(false)
+const isDark = ref(document.documentElement.classList.contains('app-dark'))
+
+const toggleTheme = () => {
+  const root = document.documentElement
+  const nowDark = root.classList.toggle('app-dark')
+  isDark.value = nowDark
+  localStorage.setItem('theme', nowDark ? 'dark' : 'light')
+}
 
 const menuItems = ref([
   {
