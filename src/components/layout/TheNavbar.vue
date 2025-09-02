@@ -83,12 +83,12 @@ const menuItems = ref([
   position: sticky;
   top: 0;
   z-index: 1001;
-  border-bottom: solid 1px #ddd;
-  background-color: #fff;
+  border-bottom: solid 1px var(--border);
+  background-color: var(--card);
 }
 
 .custom-menubar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--card);
   border: none;
   border-radius: 0;
 }
@@ -101,6 +101,7 @@ const menuItems = ref([
 .logo-text {
   font-size: 1.2rem;
   font-weight: 600;
+  color: var(--text);
 }
 
 .user-section {
@@ -126,45 +127,45 @@ const menuItems = ref([
 }
 
 :deep(.p-menuitem-link) {
-  color: white !important;
+  color: var(--text) !important;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
 :deep(.p-menuitem-link:hover) {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: var(--bg) !important;
   transform: translateY(-1px);
 }
 
 :deep(.p-menuitem-icon) {
-  color: white !important;
+  color: var(--text) !important;
 }
 
 :deep(.p-menuitem-text) {
-  color: white !important;
+  color: var(--text) !important;
 }
 
 :deep(.p-submenu-list) {
-  background: white;
+  background: var(--card);
   border-radius: 8px;
   border: none;
 }
 
 :deep(.p-submenu-list .p-menuitem-link) {
-  color: #495057 !important;
+  color: var(--text) !important;
 }
 
 :deep(.p-submenu-list .p-menuitem-link:hover) {
-  background-color: #f8f9fa !important;
-  color: #212529 !important;
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
 }
 
 :deep(.p-submenu-list .p-menuitem-icon) {
-  color: #6c757d !important;
+  color: var(--muted) !important;
 }
 
 :deep(.p-submenu-list .p-menuitem-text) {
-  color: #495057 !important;
+  color: var(--text) !important;
 }
 
 /* Адаптивність */

@@ -86,7 +86,7 @@ const formatDate = (datetime) => {
 
 <style scoped>
 .events-list {
-  background: white;
+  background: var(--card);
   border-radius: 12px;
   padding: 32px 0;
   max-width: 100%;
@@ -95,7 +95,7 @@ const formatDate = (datetime) => {
 
 .events-title {
   margin: 0 0 24px 0;
-  color: #333;
+  color: var(--text);
   font-size: 1.3rem;
   display: flex;
   align-items: center;
@@ -103,8 +103,8 @@ const formatDate = (datetime) => {
 }
 
 .events-count {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--primary);
+  color: #ffffff;
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -114,7 +114,7 @@ const formatDate = (datetime) => {
 .no-events {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--muted);
   font-style: italic;
 }
 
@@ -127,7 +127,7 @@ const formatDate = (datetime) => {
 .event-card {
   display: flex;
   align-items: center;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   transition: all 0.2s ease;
   height: 82px;
@@ -135,7 +135,7 @@ const formatDate = (datetime) => {
 }
 
 .event-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
@@ -145,9 +145,9 @@ const formatDate = (datetime) => {
   font-size: 1.5rem;
   font-weight: bold;
   min-width: 70px;
-  color: #333;
+  color: var(--text);
   margin-right: 16px;
-  border-right: solid 1px #e5e7eb;
+  border-right: solid 1px var(--border);
   height: 48px;
 }
 
@@ -159,28 +159,28 @@ const formatDate = (datetime) => {
 }
 
 .movie-title {
-  color: #333;
+  color: var(--text);
   font-size: 1.2rem;
   font-weight: bold;
 }
 
 .event-place {
-  color: #666;
+  color: var(--muted);
 }
 
 .place-name {
-  color: #007bff;
+  color: var(--primary);
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .place-name:hover {
-  color: #0056b3;
+  color: var(--primary);
   text-decoration: underline;
 }
 
 .place-name:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: 4px;
 }

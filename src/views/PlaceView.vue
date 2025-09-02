@@ -302,7 +302,7 @@ watch(
 }
 
 .place-content {
-  background: white;
+  background: var(--card);
   border-radius: 0;
   margin: 0;
   padding-top: 20px;
@@ -311,7 +311,7 @@ watch(
 .place-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
+  color: var(--text);
   line-height: 1.2;
 }
 
@@ -319,7 +319,7 @@ watch(
   display: flex;
   padding-bottom: 20px;
   font-size: 1.1rem;
-  color: #666;
+  color: var(--muted);
   margin: 0;
   max-width: 100%;
   line-height: 1.6;
@@ -339,7 +339,7 @@ watch(
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text);
   margin: 0 0 32px 0;
 }
 
@@ -356,13 +356,13 @@ watch(
 
 .event-date {
   font-size: 1rem;
-  color: #333;
+  color: var(--text);
   font-weight: 500;
   margin-bottom: 4px;
 }
 
 .address-section {
-  background: #f8f9fa;
+  background: var(--card-elevated);
   padding: 24px;
   border-radius: 8px;
   height: fit-content;
@@ -371,7 +371,7 @@ watch(
 .address-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text);
   margin: 0 0 16px 0;
 }
 
@@ -382,13 +382,13 @@ watch(
 
 .address-text {
   font-size: 1rem;
-  color: #333;
+  color: var(--text);
   margin: 0;
   line-height: 1.5;
 }
 
 .no-events {
-  color: #666;
+  color: var(--muted);
   font-style: italic;
   padding: 20px 0;
 }
@@ -396,10 +396,10 @@ watch(
 .state {
   text-align: center;
   padding: 40px;
-  background: white;
+  background: var(--card-elevated);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  color: #666;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  color: var(--muted);
 }
 
 .state.error {
@@ -416,7 +416,7 @@ watch(
   display: flex;
   padding-top: 20px;
   margin: 0;
-  color: #333;
+  color: var(--text);
   font-size: 2rem;
   font-weight: 700;
 }
@@ -432,29 +432,30 @@ watch(
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.2s ease;
+  background: var(--card);
 }
 
 .place-card:hover {
-  background: #f9f9f9;
+  background: var(--card-elevated);
 }
 
 .place-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
 .place-info {
   font-size: 0.95rem;
-  color: #666;
+  color: var(--muted);
 }
 
 .address {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #666;
+  color: var(--muted);
   font-size: 0.95rem;
 }
 

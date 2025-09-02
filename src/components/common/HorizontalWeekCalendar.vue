@@ -137,7 +137,7 @@ onMounted(() => {
 
 <style scoped>
 .horizontal-week-calendar {
-  background: white;
+  background: var(--card);
   border-radius: 16px;
 }
 
@@ -155,7 +155,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: #f3f4f6;
+  background: var(--card);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -163,7 +163,7 @@ onMounted(() => {
 
 .calendar-logo i {
   font-size: 22px;
-  color: #111827;
+  color: var(--text);
 }
 
 .calendar-title {
@@ -174,10 +174,11 @@ onMounted(() => {
   text-align: center;
   justify-content: start;
   font-weight: 600;
+  color: var(--text);
 }
 
 .calendar-title i {
-  color: #4299e1;
+  color: var(--primary);
 }
 
 .calendar-trigger {
@@ -187,8 +188,8 @@ onMounted(() => {
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  border: 1px solid transparent;
-  background: #f3f4f6;
+  border: 1px solid var(--border);
+  background: var(--card);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
@@ -196,7 +197,7 @@ onMounted(() => {
 }
 
 .calendar-trigger:hover {
-  background: #e5e7eb;
+  background: var(--bg);
 }
 
 .days-container {
@@ -214,23 +215,24 @@ onMounted(() => {
   height: 36px;
   border-radius: 16px;
   transition: all 0.3s ease;
-  background: white;
+  background: var(--card);
+  color: var(--text);
   text-align: center;
   cursor: pointer;
 }
 
 .day-button:hover {
-  background-color: #e5e7eb;
+  background-color: var(--bg);
 }
 
 .day-button.day-selected {
-  background-color: #000000 !important;
-  color: white !important;
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
 }
 
 .day-button.day-today {
-  background-color: #3b82f6 !important;
-  color: white !important;
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
 }
 
 .day-content {
