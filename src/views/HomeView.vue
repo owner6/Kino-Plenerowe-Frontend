@@ -19,8 +19,18 @@ const isToday = computed(() => route.meta?.isToday || false)
 // Форматування дати для SEO
 const formatDateForSEO = (date) => {
   const months = [
-    'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
-    'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'
+    'stycznia',
+    'lutego',
+    'marca',
+    'kwietnia',
+    'maja',
+    'czerwca',
+    'lipca',
+    'sierpnia',
+    'września',
+    'października',
+    'listopada',
+    'grudnia',
   ]
 
   const day = date.getDate()
@@ -89,7 +99,6 @@ const updateUrlWithDate = (date) => {
     })
   }
 }
-
 // Функція для парсингу дати з URL параметрів
 const parseDateFromParams = (dateString) => {
   if (!dateString) return new Date()
@@ -105,7 +114,7 @@ const parseDateFromParams = (dateString) => {
 // Ініціалізація дати з URL при завантаженні
 const initializeDateFromUrl = () => {
   if (isToday.value) {
-    // Головна сторінка - завжди сьогоднішня дата
+    // Головна сторінка - завжди сьогоднішня датаL
     selectedDate.value = new Date()
   } else if (route.params.date) {
     // Якщо є параметр дати в шляху

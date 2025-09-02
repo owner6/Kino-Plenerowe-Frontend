@@ -1,4 +1,5 @@
 import './assets/css/main.css'
+import '@mdi/font/css/materialdesignicons.min.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -11,6 +12,7 @@ import Avatar from 'primevue/avatar'
 import TabPanel from 'primevue/tabpanel'
 import Card from 'primevue/card'
 import Panel from 'primevue/panel'
+import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 

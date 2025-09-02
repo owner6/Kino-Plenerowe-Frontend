@@ -187,12 +187,34 @@ const formatDate = (datetime) => {
 
 @media (max-width: 768px) {
   .event-card {
-    flex-direction: column;
+    flex-direction: row; /* лишаємо в ряд */
+    flex-wrap: nowrap; /* забороняємо перенос */
+    justify-content: space-around;
+    gap: 8px;
+    height: auto; /* висота по контенту */
+    padding: 12px; /* компактніше */
+    overflow-x: auto; /* якщо не влазить — скрол */
   }
 
   .event-time {
-    margin-right: 0;
-    margin-bottom: 12px;
+    font-size: 1.2rem; /* трохи менший шрифт */
+    min-width: 60px;
+    margin-right: 8px;
+    margin-bottom: 0;
+    border-right: none; /* прибираємо роздільник */
+  }
+
+  .event-details {
+    align-items: flex-start; /* текст рівняємо по лівому краю */
+    text-align: left;
+  }
+
+  .movie-title {
+    font-size: 1rem;
+  }
+
+  .event-place {
+    font-size: 0.85rem;
   }
 }
 </style>

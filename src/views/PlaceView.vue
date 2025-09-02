@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { eventsService } from '@/services/eventsService'
-import Card from 'primevue/card'
+import { placeDescriptionsService } from '/src/services/placeDescriptionService.js'
 import GoogleMap from '@/components/common/GoogleMap.vue'
 import router from '@/router/index.js'
 
@@ -19,10 +19,17 @@ const placeName = computed(() => {
   return placeDetails.value?.name || events.value?.[0]?.place?.name || null
 })
 
+// Отримуємо опис місця з локального сервісу
+const placeDescription = computed(() => {
+  if (!route.params.slug) return null
+  return placeDescriptionsService.getDescription(route.params.slug)
+})
+
 // Фільтруємо майбутні події
 const upcomingEvents = computed(() => {
   const now = new Date()
-  return events.value.filter(event => new Date(event.datetime) >= now)
+  return events.value
+    .filter((event) => new Date(event.datetime) >= now)
     .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
 })
 
@@ -38,7 +45,10 @@ const updatePlaceSEOMetadata = (place) => {
   console.log('📄 Available seoDescription:', place.seoDescription)
 
   const title = place.seo_title || place.seoTitle || `${place.name} - Kino plenerowe`
-  const description = place.seo_description || place.seoDescription || `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
+  const description =
+    place.seo_description ||
+    place.seoDescription ||
+    `Wydarzenia kinowe w lokalizacji ${place.name}. Sprawdź repertuar kina plenerowego.`
 
   console.log('✅ Final title:', title)
   console.log('✅ Final description:', description)
@@ -55,11 +65,15 @@ const updatePlaceSEOMetadata = (place) => {
   metaDescription.content = description
 }
 
-watch(placeDetails, (newPlace) => {
-  if (newPlace) {
-    updatePlaceSEOMetadata(newPlace)
-  }
-}, { immediate: true })
+watch(
+  placeDetails,
+  (newPlace) => {
+    if (newPlace) {
+      updatePlaceSEOMetadata(newPlace)
+    }
+  },
+  { immediate: true },
+)
 
 const formatTime = (datetime) => {
   return new Date(datetime).toLocaleTimeString('uk-UA', {
@@ -103,7 +117,8 @@ const loadAllPlaces = async () => {
       metaDescription.name = 'description'
       document.head.appendChild(metaDescription)
     }
-    metaDescription.content = 'Wszystkie lokalizacje kina plenerowego. Wybierz miejsce i sprawdź repertuar.'
+    metaDescription.content =
+      'Wszystkie lokalizacje kina plenerowego. Wybierz miejsce i sprawdź repertuar.'
   } catch (e) {
     console.error('❌ Error loading all places:', e)
     error.value = e?.message || 'Błąd ładowania miejsc'
@@ -144,22 +159,25 @@ onMounted(async () => {
   }
 })
 
-watch(() => route.params.slug, async (newSlug) => {
-  loading.value = true
-  error.value = null
+watch(
+  () => route.params.slug,
+  async (newSlug) => {
+    loading.value = true
+    error.value = null
 
-  try {
-    if (!newSlug) {
-      await loadAllPlaces()
-    } else {
-      await loadSpecificPlace()
+    try {
+      if (!newSlug) {
+        await loadAllPlaces()
+      } else {
+        await loadSpecificPlace()
+      }
+    } catch (error) {
+      console.error('❌ Error in route watcher:', error)
+    } finally {
+      loading.value = false
     }
-  } catch (error) {
-    console.error('❌ Error in route watcher:', error)
-  } finally {
-    loading.value = false
-  }
-})
+  },
+)
 </script>
 
 <template>
@@ -175,7 +193,7 @@ watch(() => route.params.slug, async (newSlug) => {
       <div class="place-header">
         <h1 class="place-title">{{ placeDetails.name }}</h1>
         <p class="place-description">
-          Опис...
+          {{ placeDescription }}
         </p>
       </div>
 
@@ -191,8 +209,10 @@ watch(() => route.params.slug, async (newSlug) => {
 
           <div v-else class="events-list">
             <div v-for="event in upcomingEvents" :key="event.id" class="event-item">
-              <div class="event-date">{{ formatDate(event.datetime) }}, {{ formatTime(event.datetime) }}
-              {{ event.movieName }}</div>
+              <div class="event-date">
+                {{ formatDate(event.datetime) }}, {{ formatTime(event.datetime) }}
+                {{ event.movieName }}
+              </div>
             </div>
           </div>
         </div>
@@ -201,7 +221,9 @@ watch(() => route.params.slug, async (newSlug) => {
         <div class="address-section">
           <h3 class="address-title">Адрес</h3>
           <div class="address-content">
-            <p class="address-text">{{ placeDetails.street }} {{ placeDetails.streetNr }}, {{ placeDetails.city }}</p>
+            <p class="address-text">
+              {{ placeDetails.street }} {{ placeDetails.streetNr }}, {{ placeDetails.city }}
+            </p>
           </div>
         </div>
       </div>
@@ -215,7 +237,12 @@ watch(() => route.params.slug, async (newSlug) => {
     <div v-else-if="isAllPlacesView">
       <div v-if="allPlaces.length === 0" class="state">Brak dostępnych miejsc</div>
       <div v-else class="places-grid">
-        <Card v-for="place in allPlaces" :key="place.id" class="place-card" @click="goToPlace(place.slug)">
+        <Card
+          v-for="place in allPlaces"
+          :key="place.id"
+          class="place-card"
+          @click="goToPlace(place.slug)"
+        >
           <template #title>
             <div class="place-title">
               {{ place.name }}
@@ -223,15 +250,12 @@ watch(() => route.params.slug, async (newSlug) => {
           </template>
           <template #content>
             <div class="place-info">
-              <div class="address">
-                {{ place.street }} {{ place.streetNr }}, {{ place.city }}
-              </div>
+              <div class="address">{{ place.street }} {{ place.streetNr }}, {{ place.city }}</div>
             </div>
           </template>
         </Card>
       </div>
     </div>
-
 
     <!-- Карта Google Maps -->
     <GoogleMap
@@ -248,7 +272,6 @@ watch(() => route.params.slug, async (newSlug) => {
     >
       <template #header>
         <div class="panel-header">
-          <i class="pi pi-external-link"></i>
           <span>Dodatkowe informacje</span>
         </div>
       </template>
@@ -274,7 +297,7 @@ watch(() => route.params.slug, async (newSlug) => {
 <style scoped>
 .place-page {
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0px auto;
   min-height: 100vh;
 }
 
@@ -294,8 +317,7 @@ watch(() => route.params.slug, async (newSlug) => {
 
 .place-description {
   display: flex;
-  align-items: left;
-
+  padding-bottom: 20px;
   font-size: 1.1rem;
   color: #666;
   margin: 0;
@@ -392,7 +414,7 @@ watch(() => route.params.slug, async (newSlug) => {
 
 .title {
   display: flex;
-  padding-top: 20px ;
+  padding-top: 20px;
   margin: 0;
   color: #333;
   font-size: 2rem;

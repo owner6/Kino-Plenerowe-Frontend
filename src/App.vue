@@ -1,6 +1,10 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import TheNavbar from './components/layout/TheNavbar.vue'
+import { useColorMode } from '@/composables/useColorMode'
+
+// Initialize color mode (system by default)
+useColorMode()
 </script>
 
 <template>
@@ -19,7 +23,7 @@ import TheNavbar from './components/layout/TheNavbar.vue'
   flex-direction: column;
   max-width: 1600px;
   margin: 0 auto;
-  background-color: white;
+  background-color: var(--bg);
 }
 
 .main-content {
@@ -44,15 +48,11 @@ import TheNavbar from './components/layout/TheNavbar.vue'
   #app {
     max-width: 100%;
   }
-
-  .main-content {
-    padding: 1rem;
-  }
 }
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 0.5rem;
+    padding: 0rem;
   }
 }
 </style>
