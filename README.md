@@ -28,7 +28,7 @@
 | Збірка | Vite 7 |
 | Node.js | `^20.19.0` або `>=22.12.0` |
 ## Структура проєкту
-src/ ├── views/ │ ├── HomeView.vue # Головна: календар + список подій │ └── PlaceView.vue # Локації та деталі місця ├── components/ │ ├── common/ │ │ ├── HorizontalWeekCalendar.vue │ │ └── GoogleMap.vue │ ├── movies/ │ │ └── EventsList.vue │ └── layout/ │ └── TheNavbar.vue ├── services/ │ ├── eventsService.js # HTTP-клієнт до backend API │ └── placeDescriptionsService.js ├── router/index.js └── main.js
+src/ ├── views/ # Сторінки │ ├── HomeView.vue # Головна: календар + список подій │ └── PlaceView.vue # Локації та деталі місця ├── components/ │ ├── common/ │ │ ├── HorizontalWeekCalendar.vue │ │ └── GoogleMap.vue │ ├── movies/ │ │ └── EventsList.vue │ └── layout/ │ └── TheNavbar.vue ├── services/ │ ├── eventsService.js # HTTP-клієнт до backend API │ └── placeDescriptionsService.js # Локальні описи локацій ├── router/ │ └── index.js # Маршрути додатку └── main.js # Точка входу
 
 ## Backend API
 Frontend очікує REST API за адресою `http://localhost:3000` (налаштовується в `src/services/eventsService.js`).
