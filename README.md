@@ -27,8 +27,20 @@
 | UI | PrimeVue 4 (Aura theme), PrimeIcons |
 | Збірка | Vite 7 |
 | Node.js | `^20.19.0` або `>=22.12.0` |
+
 ## Структура проєкту
-src/ ├── views/ # Сторінки │ ├── HomeView.vue # Головна: календар + список подій │ └── PlaceView.vue # Локації та деталі місця ├── components/ │ ├── common/ │ │ ├── HorizontalWeekCalendar.vue │ │ └── GoogleMap.vue │ ├── movies/ │ │ └── EventsList.vue │ └── layout/ │ └── TheNavbar.vue ├── services/ │ ├── eventsService.js # HTTP-клієнт до backend API │ └── placeDescriptionsService.js # Локальні описи локацій ├── router/ │ └── index.js # Маршрути додатку └── main.js # Точка входу
+- **`src/views/`** — сторінки додатку
+  - `HomeView.vue` — головна (календар + події на дату)
+  - `PlaceView.vue` — список локацій і сторінка місця
+- **`src/components/`** — UI-компоненти
+  - `common/` — календар, карта
+  - `movies/` — список подій
+  - `layout/` — навігація
+- **`src/services/`** — робота з API та локальні дані
+  - `eventsService.js` — запити до backend
+  - `placeDescriptionsService.js` — описи локацій
+- **`src/router/index.js`** — маршрутизація
+- **`src/main.js`** — ініціалізація Vue-додатку
 
 ## Backend API
 Frontend очікує REST API за адресою `http://localhost:3000` (налаштовується в `src/services/eventsService.js`).
